@@ -1,0 +1,21 @@
+{
+  "name": "move-as",
+  "private": true,
+  "version": "0.0.0",
+  "description": "MoveAS monorepo",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "yarn workspaces run build",
+    "dev": "yarn workspace moveas-website dev",
+    "dev:backend": "yarn workspace moveas-backend start:dev",
+    "lint": "yarn workspaces run lint",
+    "test": "yarn workspaces run test"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.0"
+  }
+}
+

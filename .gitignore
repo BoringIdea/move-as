@@ -1,0 +1,11 @@
+node_modules
+.turbo
+.pnpm-store
+.yarn/
+.yarn-cache
+.yarn/cache
+dist
+.next
+temp
+.DS_Store
+
