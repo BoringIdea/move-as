@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^2.0.1",
-    "@moveas/sdk": "file:../../packages/sdk",
+    "@moveas/sdk": "link:../../packages/sdk",
     "@mysten/sui": "^1.35.0",
     "@nestjs/common": "^11.1.2",
     "@nestjs/config": "^4.0.2",

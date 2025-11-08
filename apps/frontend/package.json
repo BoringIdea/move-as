@@ -13,7 +13,7 @@
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
     "@martianwallet/aptos-wallet-adapter": "^0.0.5",
     "@mizuwallet-sdk/core": "^1.3.2",
-    "@moveas/sdk": "file:../../packages/sdk",
+    "@moveas/sdk": "link:../../packages/sdk",
     "@msafe/aptos-wallet-adapter": "^1.1.3",
     "@mysten/bcs": "^1.0.3",
     "@mysten/dapp-kit": "^0.14.17",
