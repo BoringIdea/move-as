@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn workspaces run build",
+    "build": "yarn workspace moveas-backend build && yarn workspace moveas-website build",
     "dev": "yarn workspace moveas-website dev",
     "dev:backend": "yarn workspace moveas-backend start:dev",
     "lint": "yarn workspaces run lint",
