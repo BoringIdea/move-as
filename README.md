@@ -1,37 +1,91 @@
 # MoveAS Monorepo
 
-This repository aggregates the MoveAS frontend, backend, smart contracts, and SDK into a single workspace.
+MoveAS brings together a Move-based smart contract suite, an SDK, and full-stack applications that surface account abstraction tooling for Aptos and Sui networks. This repository houses everything required to build, test, and deploy the platform.
 
-## Structure
+## Overview
 
-- `apps/frontend`: Next.js application deployed on Vercel.
-- `apps/backend`: NestJS service deployed on DigitalOcean.
-- `packages/contracts`: Move smart contracts.
-- `packages/sdk`: Node package published to npm.
+- **Applications**: A Next.js frontend for dashboards and account management, and a NestJS backend providing API endpoints, account orchestration, and background jobs.
+- **Smart Contracts**: Move packages for Aptos and Sui that implement account abstraction primitives and supporting utilities.
+- **SDK**: TypeScript helpers for integrating MoveAS features into external products.
 
-## Getting Started
+## Repository Layout
 
-Install dependencies with your preferred workspace-aware package manager:
+- `apps/frontend`: Next.js interface, deployed to Vercel.
+- `apps/backend`: NestJS API service, deployed to DigitalOcean Apps.
+- `packages/contracts`: Move packages (Aptos/Sui) with scripts and tests.
+- `packages/sdk`: TypeScript/JavaScript SDK distributed on npm.
+- `tsconfig.base.json`: Shared TypeScript configuration for all workspaces.
+
+## Prerequisites
+
+- Node.js 20+
+- Yarn 1 (classic) with workspaces enabled
+- Docker (for local databases) if running backend integrations
+- Rust toolchain and Move CLI (for contract compilation)
+
+Ensure you have access to Aptos and Sui testnet credentials when exercising blockchain workflows.
+
+## First-Time Setup
+
+Install all dependencies from the monorepo root:
 
 ```bash
 yarn install
 ```
 
-Run the frontend locally:
+Generate environment files as needed (examples are provided in each workspace):
 
 ```bash
+cp apps/frontend/.env.example apps/frontend/.env.local
+cp apps/backend/.env.example apps/backend/.env
+```
+
+## Common Tasks
+
+```bash
+# Start the frontend on http://localhost:3000
 yarn workspace moveas-website dev
-```
 
-Run the backend locally:
-
-```bash
+# Start the backend with live reload
 yarn workspace moveas-backend start:dev
-```
 
-Build all workspaces:
+# Run smart contract tests (Move CLI)
+yarn workspace moveas-contracts test
 
-```bash
+# Run SDK unit tests
+yarn workspace moveas-sdk test
+
+# Build every workspace
 yarn build
 ```
+
+## Testing and Quality
+
+- Frontend: `yarn workspace moveas-website test` runs Playwright/UI tests (coming soon).
+- Backend: `yarn workspace moveas-backend test` executes Jest unit tests; `test:e2e` covers API flows.
+- Contracts: The Move CLI tests under `packages/contracts/*/tests` validate on-chain logic.
+- SDK: Jest test suites validate codec and integration helpers.
+
+We encourage adding coverage reports whenever new features land. Continuous integration will run lint and test jobs for pull requests.
+
+## Releasing
+
+1. Update smart contract versions and publish Move packages to the appropriate registries.
+2. Publish the SDK via `yarn workspace moveas-sdk publish`.
+3. Tag the repository using `git tag vX.Y.Z`.
+4. Draft release notes highlighting contract migrations, backend migrations, and UI changes.
+
+Deployment pipelines are orchestrated per workspace; see `apps/frontend/README.md`, `apps/backend/README.md`, and Move package documentation for environment-specific steps.
+
+## Contributing
+
+We welcome contributions! Please review `CONTRIBUTING.md` for coding standards, branching guidance, and pull request expectations before submitting changes.
+
+## Security
+
+Security disclosures should follow the process outlined in `SECURITY.md`. The smart contracts are currently **unaudited**; use at your own risk.
+
+## License
+
+This repository is distributed under the Business Source License 1.1. Non-production use is permitted, and on `2029-01-01` (or earlier subject to the license terms) the code will transition to Apache License 2.0. See `LICENSE` for the full text.
 

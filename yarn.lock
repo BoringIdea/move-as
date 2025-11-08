@@ -2767,7 +2767,7 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@moveas/sdk@file:packages/sdk":
+"@moveas/sdk@link:packages/sdk":
   version "0.0.19-beta"
   dependencies:
     "@aptos-labs/ts-sdk" "^2.0.1"
