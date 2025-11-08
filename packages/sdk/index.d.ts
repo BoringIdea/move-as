@@ -1,1 +1,1 @@
-declare module 'mas-sdk';
+export * from "./dist";
