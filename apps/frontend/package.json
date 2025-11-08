@@ -2,6 +2,8 @@
   "name": "moveas-website",
   "version": "0.1.0",
   "private": true,
+  "author": "Luke Ma <lukema95@gmail.com>",
+  "license": "Business Source License 1.1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
