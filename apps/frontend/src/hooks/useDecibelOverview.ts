@@ -8,6 +8,14 @@ interface DecibelOverview {
   activeMarkets: number;
   totalMarkets: number;
   activeTraders: number;
+  score?: number;
+}
+
+interface DecibelLeaderboardItem {
+  score?: number;
+  decibel_score?: number;
+  realized_pnl?: number;
+  roi?: number;
 }
 
 interface UseDecibelOverviewReturn {
@@ -44,9 +52,14 @@ export function useDecibelOverview(): UseDecibelOverviewReturn {
         const contexts = await contextsResponse.json();
         
         // Process leaderboard data (optional)
-        let leaderboardData = { total_count: 0, items: [] };
+        type LeaderboardResponse = {
+          total_count?: number;
+          items?: DecibelLeaderboardItem[];
+        };
+
+        let leaderboardData: LeaderboardResponse = { total_count: 0, items: [] };
         if (leaderboardResponse.ok) {
-          leaderboardData = await leaderboardResponse.json();
+          leaderboardData = (await leaderboardResponse.json()) as LeaderboardResponse;
         }
 
         if (!mounted) return;
@@ -66,12 +79,21 @@ export function useDecibelOverview(): UseDecibelOverviewReturn {
         const totalMarkets = contextsArray.length;
         const activeTraders = leaderboardData.total_count || leaderboardData.items?.length || 0;
 
+        const leaderboardScore =
+          leaderboardData.items?.find((item) => typeof item.score === 'number')?.score ??
+          leaderboardData.items?.find((item) => typeof item.decibel_score === 'number')?.decibel_score ??
+          (leaderboardData.items && leaderboardData.items.length > 0
+            ? leaderboardData.items.reduce((sum: number, item) => sum + (item.realized_pnl ?? item.roi ?? 0), 0) /
+              leaderboardData.items.length
+            : 0);
+
         setData({
           total24hVolume,
           totalOpenInterest,
           activeMarkets,
           totalMarkets,
           activeTraders,
+          score: leaderboardScore,
         });
       } catch (err) {
         console.error('Error fetching Decibel overview:', err);

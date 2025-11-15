@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import Link from 'next/link'
 import { getPackageAddress, Codec, SchemaField, Network } from "@moveas/sdk"
@@ -23,7 +22,6 @@ const aptos = new Aptos(config);
 export function NewAptosAttestation({chain, schema }: { chain: Chain, schema: any }) {
   const { connected, account, signAndSubmitTransaction } = useWallet();
   const [digest, setDigest] = useState('');
-  const [showAdvanced, setShowAdvanced] = useState(false)
   const [selectedButton, setSelectedButton] = useState("onchain")
   const [fieldValues, setFieldValues] = useState<{ [key: string]: string }>({})
   const [recipient, setRecipient] = useState("")
@@ -147,221 +145,194 @@ export function NewAptosAttestation({chain, schema }: { chain: Chain, schema: an
   };
 
   return (
-    <div className="flex flex-col w-full min-h-screen relative bg-gradient-to-br from-blue-50/30 via-white to-blue-50/30">
+    <div className="min-h-screen bg-white text-black">
       <Header />
-      <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-8 p-4 md:gap-10 md:p-8 lg:p-12 relative z-0">
-        {/* Hero Section */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-lg border border-blue-100/30">
-          <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent leading-tight">
-              Create Attestation
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 font-medium max-w-2xl">
-              Create a new attestation using schema #{schema.id}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-blue-100/70 to-blue-200/70 rounded-xl">
-              <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        <section className="border border-black bg-[#F4F7FF] px-6 py-5 space-y-3">
+          <div className="flex flex-col md:flex-row justify-between gap-4">
+            <div className="space-y-2">
+              <p className="text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/60">Schema Attestation</p>
+              <h1 className="text-3xl font-black">Create a new attestation</h1>
+              <p className="text-sm font-bold text-black/60">Issue a signed statement using schema #{schema.id}.</p>
+              <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/40 break-all">{schema.address}</p>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-blue-600 font-semibold">Schema #{schema.id}</p>
-              <p className="text-xs text-gray-500 font-medium">Aptos Network</p>
+            <div className="text-right space-y-1 text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/40">
+              <span>{chain.toUpperCase()} network</span>
+              <span>{schemaItem.length} fields</span>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Main Form Card */}
-        <div className="w-full max-w-4xl mx-auto bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-100/30 overflow-hidden">
-          {/* Form Header */}
-          <div className="p-6 md:p-8 border-b border-blue-100/30 bg-gradient-to-r from-blue-50/30 to-indigo-50/30">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Attestation Details</h2>
-            <p className="text-gray-600 font-medium">Fill in the required information to create your attestation</p>
+        <section className="border border-black bg-white px-5 py-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Schema Fields</p>
+              <p className="text-xs font-bold text-black/50">Populate each attribute before submission.</p>
+            </div>
+            <span className="text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/40">Required</span>
           </div>
-
-          {/* Form Content */}
-          <div className="p-6 md:p-8 space-y-8">
-            {/* Schema Fields */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-bold text-gray-800 border-b border-blue-200/50 pb-2">Schema Fields</h3>
-              <div className="grid gap-6 md:grid-cols-2">
-                {schemaItem.map((field: SchemaField, index: number) => (
-                  <div key={index} className="space-y-2">
-                    <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                      <span className="px-2 py-1 bg-blue-100/50 text-blue-700 text-xs font-bold rounded-lg">
-                        {field.type}
-                      </span>
-                      {field.name}
-                    </Label>
-                    <Input
-                      type="text"
-                      placeholder={`Enter ${field.name} (${field.type})`}
-                      value={fieldValues[field.name] || ''}
-                      onChange={(e) => handleInputChange(field.name, e.target.value)}
-                      className="w-full h-12 px-4 border-2 border-blue-200/50 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200/50 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                    />
-                  </div>
-                ))}
+          <div className="grid gap-4 md:grid-cols-2">
+            {schemaItem.map((field: SchemaField, index: number) => (
+              <div key={index} className="border border-black px-4 py-3 space-y-2">
+                <Label className="text-[0.65rem] font-black uppercase tracking-[0.2em] text-black/60 flex items-center gap-2">
+                  <span className="px-2 py-[2px] border border-black text-[0.6rem] font-black tracking-[0.3em]">{field.type}</span>
+                  {field.name}
+                </Label>
+                <Input
+                  type="text"
+                  placeholder={`Enter ${field.name} (${field.type})`}
+                  value={fieldValues[field.name] || ''}
+                  onChange={(e) => handleInputChange(field.name, e.target.value)}
+                  className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+                />
               </div>
-            </div>
+            ))}
+          </div>
+        </section>
 
-            {/* Basic Information */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-bold text-gray-800 border-b border-blue-200/50 pb-2">Basic Information</h3>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-gray-700">Recipient Address</Label>
-                  <Input
-                    type="text"
-                    placeholder="0x..."
-                    value={recipient}
-                    onChange={(e) => setRecipient(e.target.value)}
-                    className="w-full h-12 px-4 border-2 border-blue-200/50 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200/50 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-gray-700">Expiration Time</Label>
-                  <Input
-                    type="number"
-                    placeholder="Unix timestamp (0 for no expiration)"
-                    value={expirationTime}
-                    onChange={(e) => setExpirationTime(parseInt(e.target.value) || 0)}
-                    className="w-full h-12 px-4 border-2 border-blue-200/50 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200/50 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Advanced Options */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-bold text-gray-800 border-b border-blue-200/50 pb-2">Advanced Options</h3>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-gray-700">Reference Attestation ID</Label>
-                  <Input
-                    type="text"
-                    placeholder="0x..."
-                    value={refAttestationId}
-                    onChange={(e) => setRefAttestationId(e.target.value)}
-                    className="w-full h-12 px-4 border-2 border-blue-200/50 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200/50 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-gray-700">Attestation Type</Label>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      disabled
-                      className="flex-1 h-12 px-4 rounded-xl font-semibold bg-gray-100 text-gray-400 border-2 border-gray-200 cursor-not-allowed opacity-60"
-                    >
-                      Off-chain (Coming Soon)
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={() => handleButtonClick("onchain")}
-                      className={`flex-1 h-12 px-4 rounded-xl transition-all duration-200 font-semibold ${
-                        selectedButton === "onchain"
-                          ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg"
-                          : "bg-blue-50/70 text-blue-600 border-2 border-blue-200/50 hover:bg-blue-100/70"
-                      }`}
-                    >
-                      On-chain
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Revocable Option */}
-            <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-50/30 to-indigo-50/30 rounded-xl border border-blue-200/50">
-              <input
-                type="checkbox"
-                id="revocable"
-                checked={isRevocable}
-                onChange={handleRevocableChange}
-                className="w-5 h-5 text-blue-600 border-2 border-blue-300 rounded focus:ring-2 focus:ring-blue-200/50"
+        <section className="border border-black bg-white px-5 py-5 space-y-4">
+          <div>
+            <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Basic Information</p>
+            <p className="text-xs font-bold text-black/50">Recipient and expiration metadata.</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Recipient Address</Label>
+              <Input
+                type="text"
+                placeholder="0x..."
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
+                className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
               />
-              <Label htmlFor="revocable" className="text-sm font-semibold text-gray-700">
-                Make this attestation revocable
-              </Label>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Expiration Time</Label>
+              <Input
+                type="number"
+                placeholder="Unix timestamp (0 for none)"
+                value={expirationTime}
+                onChange={(e) => setExpirationTime(parseInt(e.target.value) || 0)}
+                className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+              />
             </div>
           </div>
+        </section>
 
-          {/* Form Footer */}
-          <div className="p-6 md:p-8 border-t border-blue-100/30 bg-gradient-to-r from-blue-50/20 to-indigo-50/20">
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
-              <Link
-                href="/schemas"
-                className="px-6 py-3 text-blue-600 font-semibold rounded-xl border-2 border-blue-200/50 hover:bg-blue-50/70 transition-all duration-200 hover:scale-105"
-              >
-                ← Back to Schemas
-              </Link>
-              <Button
-                onClick={handleCreateAttestation}
-                disabled={isLoading || !connected}
-                className="px-8 py-3 bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  'Create Attestation'
-                )}
-              </Button>
-            </div>
+        <section className="border border-black bg-white px-5 py-5 space-y-4">
+          <div>
+            <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Advanced Options</p>
+            <p className="text-xs font-bold text-black/50">Add a reference ID and choose type.</p>
           </div>
-        </div>
-
-        {/* Success Message */}
-        {digest && (
-          <div className="w-full max-w-4xl mx-auto bg-gradient-to-r from-green-50/90 to-emerald-50/90 backdrop-blur-sm rounded-2xl shadow-lg border border-green-200/50 p-6 md:p-8">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-green-800">Attestation Created Successfully!</h3>
-              <p className="text-green-700 font-medium">Transaction Hash: {digest}</p>
-              <div className="flex gap-4 justify-center">
-                <a
-                  href={`${getExplorerTxUrl(chain)}/${digest}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105"
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Reference Attestation ID</Label>
+              <Input
+                type="text"
+                placeholder="0x..."
+                value={refAttestationId}
+                onChange={(e) => setRefAttestationId(e.target.value)}
+                className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Attestation Type</p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  disabled
+                  className="flex-1 h-12 border border-black bg-white/70 text-black/40 font-black uppercase tracking-[0.3em]"
                 >
-                  View on Explorer
-                </a>
-                <Link
-                  href="/attestations"
-                  className="px-6 py-3 bg-green-50/70 hover:bg-green-100/70 text-green-700 font-semibold rounded-xl border border-green-200/50 transition-all duration-200 hover:scale-105"
+                  Off-chain (coming soon)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleButtonClick('onchain')}
+                  className={`flex-1 h-12 border border-black font-black uppercase tracking-[0.3em] transition ${selectedButton === 'onchain' ? 'bg-[#2792FF] text-white' : 'bg-white text-black'}`}
                 >
-                  View All Attestations
-                </Link>
+                  On-chain
+                </button>
               </div>
             </div>
           </div>
-        )}
+        </section>
+
+        <section className="border border-black bg-[#F4F7FF] px-5 py-4 space-y-4">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="revocable"
+              checked={isRevocable}
+              onChange={handleRevocableChange}
+              className="w-4 h-4 border border-black"
+            />
+            <Label htmlFor="revocable" className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">
+              Make this attestation revocable
+            </Label>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
+            <Link
+              href="/schemas"
+              className="border border-black px-4 py-2 text-xs font-black uppercase tracking-[0.3em]"
+            >
+              ← Back to Schemas
+            </Link>
+            <button
+              type="button"
+              onClick={handleCreateAttestation}
+              disabled={isLoading || !connected}
+              className="flex items-center justify-center gap-2 border border-black bg-[#2792FF] text-white px-5 py-2 text-xs font-black uppercase tracking-[0.3em] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                'Create Attestation'
+              )}
+            </button>
+          </div>
+        </section>
       </main>
 
-      {/* Alert Dialog */}
+      {digest && (
+        <section className="max-w-6xl mx-auto px-4 py-5 space-y-3 border border-black bg-[#F4FFF9]">
+          <div className="flex items-center justify-between text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/50">
+            <span>Attestation created</span>
+            <span>Transaction hash</span>
+          </div>
+          <p className="text-sm font-black text-black break-all">{digest}</p>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href={`${getExplorerTxUrl(chain)}/${digest}`}
+              target="_blank"
+              rel="noreferrer"
+              className="border border-black px-4 py-2 text-xs font-black uppercase tracking-[0.3em]"
+            >
+              View on explorer
+            </a>
+            <Link
+              href="/attestations"
+              className="border border-black px-4 py-2 text-xs font-black uppercase tracking-[0.3em]"
+            >
+              View all attestations
+            </Link>
+          </div>
+        </section>
+      )}
+
       <AlertDialog.Root open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-        <AlertDialog.Content className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border-2 border-blue-200/50 p-6 max-w-md mx-auto">
-          <AlertDialog.Title className="text-xl font-bold text-gray-800 mb-2">
-            {alertMessage.includes('successfully') ? 'Success!' : 'Error'}
+        <AlertDialog.Content className="bg-white border border-black px-6 py-5 max-w-md mx-auto">
+          <AlertDialog.Title className="text-lg font-black text-black mb-2">
+            {alertMessage.includes('successfully') ? 'Success' : 'Notice'}
           </AlertDialog.Title>
-          <AlertDialog.Description className="text-gray-600 mb-6">
-            <div className="whitespace-pre-wrap">{alertMessage}</div>
+          <AlertDialog.Description className="text-black/70 mb-4 whitespace-pre-wrap">
+            {alertMessage}
           </AlertDialog.Description>
           <Flex gap="3" justify="end">
             <AlertDialog.Cancel>
-              <button className="px-4 py-2 text-gray-600 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-all duration-200">
-                Close
-              </button>
+              <button className="px-4 py-2 border border-black text-xs font-black uppercase tracking-[0.3em]">Close</button>
             </AlertDialog.Cancel>
           </Flex>
         </AlertDialog.Content>

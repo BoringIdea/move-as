@@ -1,15 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { CheckCircle, Clock, Database, Zap, Shield, Activity } from 'lucide-react'
+import { CheckCircle, Database, Activity, Zap, Shield } from 'lucide-react'
 
 interface RegistrationStep {
   id: string
   title: string
   description: string
   icon: React.ReactNode
-  estimatedTime: number // in seconds
-  status: 'pending' | 'in-progress' | 'completed'
+  estimatedTime: number
 }
 
 interface PassportRegistrationProgressProps {
@@ -17,14 +16,18 @@ interface PassportRegistrationProgressProps {
   onComplete?: () => void
   progress?: {
     currentStep: number
-    totalSteps: number
     elapsedTime: number
     estimatedTime: number
   }
   isBackendCompleted?: boolean
 }
 
-export function PassportRegistrationProgress({ isRegistering, onComplete, progress, isBackendCompleted }: PassportRegistrationProgressProps) {
+export function PassportRegistrationProgress({
+  isRegistering,
+  onComplete,
+  progress,
+  isBackendCompleted,
+}: PassportRegistrationProgressProps) {
   const [currentStep, setCurrentStep] = useState(progress?.currentStep || 0)
   const [elapsedTime, setElapsedTime] = useState(progress?.elapsedTime || 0)
   const [remainingTime, setRemainingTime] = useState(progress?.estimatedTime || 150)
@@ -32,80 +35,67 @@ export function PassportRegistrationProgress({ isRegistering, onComplete, progre
   const steps: RegistrationStep[] = [
     {
       id: 'signature',
-      title: 'Verify Signature',
-      description: 'Verifying your wallet signature...',
+      title: 'Verify signature',
+      description: 'Confirming wallet authorization',
       icon: <Shield className="w-5 h-5" />,
       estimatedTime: 10,
-      status: 'pending'
     },
     {
       id: 'fetch-transactions',
-      title: 'Fetch On-chain Data',
-      description: 'Retrieving your transaction history from blockchain...',
+      title: 'Fetch ledger data',
+      description: 'Pulling transactions and balances',
       icon: <Database className="w-5 h-5" />,
-      estimatedTime: 60,
-      status: 'pending'
+      estimatedTime: 50,
     },
     {
       id: 'analyze-activity',
-      title: 'Analyze On-chain Activity',
-      description: 'Analyzing your on-chain interaction patterns...',
+      title: 'Analyze behavior',
+      description: 'Profiling your on-chain actions',
       icon: <Activity className="w-5 h-5" />,
       estimatedTime: 40,
-      status: 'pending'
     },
     {
-      id: 'calculate-score',
-      title: 'Calculate Passport Score',
-      description: 'Computing your comprehensive score...',
+      id: 'build-score',
+      title: 'Build score',
+      description: 'Calculating Passport credibility',
       icon: <Zap className="w-5 h-5" />,
       estimatedTime: 30,
-      status: 'pending'
     },
     {
       id: 'finalize',
-      title: 'Complete Registration',
-      description: 'Saving your Passport data...',
+      title: 'Finalize',
+      description: 'Saving your Passport snapshot',
       icon: <CheckCircle className="w-5 h-5" />,
       estimatedTime: 10,
-      status: 'pending'
-    }
+    },
   ]
 
-  // Calculate total estimated time
-  const totalEstimatedTime = steps.reduce((sum, step) => sum + step.estimatedTime, 0)
+  const totalEstimated = steps.reduce((sum, step) => sum + step.estimatedTime, 0)
 
-  // Update steps based on elapsed time
   useEffect(() => {
     if (!isRegistering) return
 
     const interval = setInterval(() => {
       setElapsedTime(prev => {
-        const newElapsed = prev + 1
-        
-        // Update current step based on elapsed time
+        const next = prev + 1
         let stepIndex = 0
-        let cumulativeTime = 0
-        
+        let total = 0
         for (let i = 0; i < steps.length; i++) {
-          cumulativeTime += steps[i].estimatedTime
-          if (newElapsed <= cumulativeTime) {
+          total += steps[i].estimatedTime
+          if (next <= total) {
             stepIndex = i
             break
           }
         }
-        
         setCurrentStep(stepIndex)
-        setRemainingTime(Math.max(0, totalEstimatedTime - newElapsed))
-        
-        return newElapsed
+        setRemainingTime(Math.max(0, totalEstimated - next))
+        return next
       })
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isRegistering, totalEstimatedTime, steps])
+  }, [isRegistering, totalEstimated, steps])
 
-  // Update from external progress prop
   useEffect(() => {
     if (progress) {
       setCurrentStep(progress.currentStep)
@@ -114,21 +104,17 @@ export function PassportRegistrationProgress({ isRegistering, onComplete, progre
     }
   }, [progress])
 
-  // Reset when registration starts
   useEffect(() => {
     if (isRegistering) {
       setElapsedTime(0)
       setCurrentStep(0)
-      setRemainingTime(totalEstimatedTime)
+      setRemainingTime(totalEstimated)
     }
-  }, [isRegistering, totalEstimatedTime])
+  }, [isRegistering, totalEstimated])
 
-  // Call onComplete when backend is completed
   useEffect(() => {
     if (isBackendCompleted && isRegistering) {
-      setTimeout(() => {
-        onComplete?.()
-      }, 1000)
+      setTimeout(() => onComplete?.(), 1000)
     }
   }, [isBackendCompleted, isRegistering, onComplete])
 
@@ -140,103 +126,55 @@ export function PassportRegistrationProgress({ isRegistering, onComplete, progre
     return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`
   }
 
-  const progressPercentage = Math.min((elapsedTime / totalEstimatedTime) * 100, 100)
+  const progressPercent = Math.min((elapsedTime / totalEstimated) * 100, 100)
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in duration-300">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <Zap className="w-8 h-8 text-white" />
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white border border-black rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.2)] max-w-3xl w-full p-6 space-y-5">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[0.6rem] font-black text-black/50 uppercase tracking-[0.3em]">Passport creation</p>
+            <h2 className="text-2xl font-black text-black">We are building your Passport</h2>
+            <p className="text-sm text-black/60">Gathering attestations, histories, and signals to compute your score.</p>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Creating Your Passport</h2>
-          <p className="text-gray-600">Please wait while we analyze your on-chain data</p>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-6">
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
-            <span>Progress: {Math.round(progressPercentage)}%</span>
-            <span>Estimated remaining: {formatTime(remainingTime)}</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${progressPercentage}%` }}
-            />
+          <div className="text-[0.65rem] font-black uppercase tracking-[0.2em] text-black/50 text-right">
+            <div>{Math.round(progressPercent)}% done</div>
+            <div>{formatTime(remainingTime)} remaining</div>
           </div>
         </div>
 
-        {/* Steps */}
-        <div className="space-y-4">
+        <div className="w-full h-1 bg-black/10 rounded-full">
+          <div className="h-1 bg-black transition-all duration-500 ease-out" style={{ width: `${progressPercent}%` }} />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
           {steps.map((step, index) => {
-            const isActive = index === currentStep
-            const isCompleted = index < currentStep
-            const isPending = index > currentStep
-
+            const completed = index < currentStep
+            const active = index === currentStep
             return (
-              <div 
+              <div
                 key={step.id}
-                className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 ${
-                  isActive 
-                    ? 'bg-blue-50 border border-blue-200' 
-                    : isCompleted 
-                    ? 'bg-green-50 border border-green-200' 
-                    : 'bg-gray-50 border border-gray-200'
+                className={`border rounded-lg px-4 py-3 flex items-start gap-3 transition-colors duration-300 ${
+                  active ? 'border-[#2792FF] bg-[#E1F0FF]' : completed ? 'border-black bg-[#F4F7FF]' : 'border-black/30 bg-white'
                 }`}
               >
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  isActive 
-                    ? 'bg-blue-500 text-white animate-pulse' 
-                    : isCompleted 
-                    ? 'bg-green-500 text-white' 
-                    : 'bg-gray-300 text-gray-500'
-                }`}>
-                  {isCompleted ? (
-                    <CheckCircle className="w-4 h-4" />
-                  ) : (
-                    step.icon
-                  )}
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    completed || active ? 'bg-black text-white' : 'bg-black/10 text-black/50'
+                  }`}
+                >
+                  {completed ? <CheckCircle className="w-4 h-4" /> : step.icon}
                 </div>
-                
-                <div className="flex-1 min-w-0">
-                  <div className={`font-medium transition-colors duration-300 ${
-                    isActive ? 'text-blue-900' : isCompleted ? 'text-green-900' : 'text-gray-500'
-                  }`}>
-                    {step.title}
+                <div className="flex-1">
+                  <div className="flex items-center justify-between text-sm font-black text-black">
+                    <span>{step.title}</span>
+                    <span className="text-[0.6rem] text-black/40">{step.estimatedTime}s</span>
                   </div>
-                  <div className={`text-sm transition-colors duration-300 ${
-                    isActive ? 'text-blue-700' : isCompleted ? 'text-green-700' : 'text-gray-400'
-                  }`}>
-                    {step.description}
-                  </div>
+                  <p className="text-xs text-black/50">{step.description}</p>
                 </div>
-
-                {isActive && (
-                  <div className="flex-shrink-0">
-                    <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                  </div>
-                )}
               </div>
             )
           })}
-        </div>
-
-        {/* Tips */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <div className="flex items-start space-x-2">
-            <Clock className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-blue-800">
-              <p className="font-medium mb-1">💡 Pro Tip</p>
-              <p>First-time registration analyzes your complete on-chain history and may take 2-3 minutes. Subsequent updates will be faster!</p>
-              {elapsedTime > 150 && !isBackendCompleted && (
-                <p className="mt-2 text-orange-700 font-medium">
-                  ⏳ Processing is taking longer than expected. We&apos;re extending the time to ensure complete analysis...
-                </p>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </div>
