@@ -2,7 +2,7 @@
 
 import { Header } from '@/components/header'
 import { useState } from 'react'
-import { TrendingUp, TrendingDown, Award, Activity, Users, Zap, Shield, Globe } from 'lucide-react'
+import { TrendingUp, Zap } from 'lucide-react'
 import { 
   usePassportOverviewBasic, 
   usePassportScoreHistory, 
@@ -45,30 +45,27 @@ import { getExplorerTxUrl } from '@/utils/utils'
 
 // Skeleton components for loading states
 const ScoreSkeleton = () => (
-  <div className="md:col-span-2 rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-    <div className="flex items-center justify-between mb-4">
-      <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
-      <div className="h-6 bg-gray-200 rounded w-16 animate-pulse"></div>
-    </div>
+  <div className="border border-black/40 bg-white px-4 py-4 space-y-3">
+    <div className="h-5 bg-black/10 rounded w-32 animate-pulse" />
     <div className="flex items-center gap-4">
-      <div className="h-12 bg-gray-200 rounded w-24 animate-pulse"></div>
-      <div className="h-6 bg-gray-200 rounded w-20 animate-pulse"></div>
+      <div className="h-10 bg-black/10 rounded w-20 animate-pulse" />
+      <div className="space-y-2">
+        <div className="h-4 bg-black/10 rounded w-16 animate-pulse" />
+        <div className="h-3 bg-black/10 rounded w-24 animate-pulse" />
+      </div>
     </div>
-    <div className="mt-4 flex items-center justify-between">
-      <div className="h-4 bg-gray-200 rounded w-40 animate-pulse"></div>
-      <div className="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
-    </div>
+    <div className="h-3 bg-black/10 rounded w-40 animate-pulse" />
   </div>
 )
 
 const StatsSkeleton = () => (
-  <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-    <div className="h-6 bg-gray-200 rounded w-24 mb-4 animate-pulse"></div>
+  <div className="border border-black/40 bg-white px-4 py-4 space-y-3">
+    <div className="h-4 bg-black/10 rounded w-24 animate-pulse" />
     <div className="space-y-3">
       {[1, 2, 3, 4].map((i) => (
         <div key={i} className="flex items-center justify-between">
-          <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
-          <div className="h-4 bg-gray-200 rounded w-12 animate-pulse"></div>
+          <div className="h-3 bg-black/10 rounded w-20 animate-pulse" />
+          <div className="h-3 bg-black/10 rounded w-10 animate-pulse" />
         </div>
       ))}
     </div>
@@ -76,31 +73,27 @@ const StatsSkeleton = () => (
 )
 
 const ChartSkeleton = () => (
-  <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-    <div className="flex items-center justify-between mb-4">
-      <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
-      <div className="flex gap-2">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-8 bg-gray-200 rounded w-12 animate-pulse"></div>
-        ))}
-      </div>
+  <div className="border border-black/40 bg-white px-4 py-4 space-y-3">
+    <div className="flex items-center justify-between">
+      <div className="h-4 bg-black/10 rounded w-32 animate-pulse" />
+      <div className="h-4 bg-black/10 rounded w-16 animate-pulse" />
     </div>
-    <div className="h-64 bg-gray-100 rounded-lg animate-pulse"></div>
+    <div className="h-48 bg-black/5 rounded animate-pulse" />
   </div>
 )
 
 const ActivitySkeleton = () => (
-  <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-4 sm:p-6 shadow-sm">
-    <div className="h-6 bg-gray-200 rounded w-32 mb-4 animate-pulse"></div>
+  <div className="border border-black/40 bg-white px-4 py-4 space-y-3">
+    <div className="h-4 bg-black/10 rounded w-28 animate-pulse" />
     <div className="space-y-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="flex items-start sm:items-center gap-3 p-2 sm:p-3 rounded-lg border border-gray-200">
-          <div className="w-2 h-2 bg-gray-200 rounded-full mt-1.5 sm:mt-0 animate-pulse"></div>
-          <div className="flex-1 min-w-0">
-            <div className="h-4 bg-gray-200 rounded w-24 mb-1 animate-pulse"></div>
-            <div className="h-3 bg-gray-200 rounded w-32 animate-pulse"></div>
+        <div key={i} className="flex items-start gap-3 border border-black/10 rounded px-3 py-2">
+          <div className="w-2 h-2 bg-black/20 rounded-full mt-1.5 animate-pulse" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3 bg-black/10 rounded w-32 animate-pulse" />
+            <div className="h-3 bg-black/10 rounded w-24 animate-pulse" />
           </div>
-          <div className="h-3 bg-gray-200 rounded w-16 animate-pulse"></div>
+          <div className="h-3 bg-black/10 rounded w-12 animate-pulse" />
         </div>
       ))}
     </div>
@@ -108,17 +101,15 @@ const ActivitySkeleton = () => (
 )
 
 const BadgesSkeleton = () => (
-  <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-    <div className="h-6 bg-gray-200 rounded w-40 mb-4 animate-pulse"></div>
-    <div className="space-y-4">
+  <div className="border border-black/40 bg-white px-4 py-4 space-y-3">
+    <div className="h-4 bg-black/10 rounded w-32 animate-pulse" />
+    <div className="space-y-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="p-3 rounded-lg border bg-gray-50 border-gray-200">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
-            <div className="flex-1">
-              <div className="h-4 bg-gray-200 rounded w-24 mb-1 animate-pulse"></div>
-              <div className="h-3 bg-gray-200 rounded w-32 animate-pulse"></div>
-            </div>
+        <div key={i} className="border border-black/10 rounded px-3 py-3 flex items-center gap-3">
+          <div className="w-8 h-8 bg-black/10 rounded-full animate-pulse" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3 bg-black/10 rounded w-24 animate-pulse" />
+            <div className="h-3 bg-black/10 rounded w-32 animate-pulse" />
           </div>
         </div>
       ))}
@@ -127,22 +118,21 @@ const BadgesSkeleton = () => (
 )
 
 const TipsSkeleton = () => (
-  <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-    <div className="h-6 bg-gray-200 rounded w-32 mb-4 animate-pulse"></div>
+  <div className="border border-black/40 bg-white px-4 py-4 space-y-3">
+    <div className="h-4 bg-black/10 rounded w-32 animate-pulse" />
     <div className="space-y-3">
       {[1, 2, 3].map((i) => (
         <div key={i} className="flex items-start gap-3">
-          <div className="w-5 h-5 bg-gray-200 rounded mt-0.5 animate-pulse"></div>
-          <div className="flex-1">
-            <div className="h-4 bg-gray-200 rounded w-32 mb-1 animate-pulse"></div>
-            <div className="h-3 bg-gray-200 rounded w-48 animate-pulse"></div>
+          <div className="w-4 h-4 bg-black/10 rounded-full animate-pulse" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3 bg-black/10 rounded w-32 animate-pulse" />
+            <div className="h-3 bg-black/10 rounded w-48 animate-pulse" />
           </div>
         </div>
       ))}
     </div>
   </div>
 )
-
 export default function PassportScoreOptimizedPage() {
   const [selectedTimeRange, setSelectedTimeRange] = useState('7d')
   const { currentChain } = useChain()
@@ -190,361 +180,312 @@ export default function PassportScoreOptimizedPage() {
   }
 
   const grade = basicData ? getScoreGrade(basicData.score) : { grade: 'D', color: 'text-gray-600', bg: 'bg-gray-100' }
+  const formatVolumeValue = (value?: number) => {
+    if (value === undefined || value === null) return '$0'
+    if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`
+    if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}K`
+    return `$${value.toFixed(0)}`
+  }
+
+  const formatAddress = (address?: string) => {
+    if (!address) return '—'
+    const prefix = address.slice(0, 6)
+    const suffix = address.slice(-4)
+    return `${prefix}…${suffix}`
+  }
+
+  const quickStats = [
+    { label: 'Protocols', value: basicData?.protocols ?? 0, emoji: '🧭', helper: 'tracked' },
+    { label: 'Volume', value: formatVolumeValue(basicData?.volume), emoji: '💧', helper: '24h' },
+    {
+      label: 'Badges',
+      value: `${basicData?.badges?.earned ?? 0}/${basicData?.badges?.total ?? 0}`,
+      emoji: '🏅',
+      helper: 'collected',
+    },
+    { label: 'Trades', value: '47', emoji: '📈', helper: 'latest' },
+  ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-blue-50/30">
+    <div className="min-h-screen bg-white text-black">
       <Header />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Passport Score</h1>
-          <p className="text-gray-600">Your on-chain reputation breakdown and history</p>
-        </div>
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        <section className="border border-black bg-[#F4F7FF] px-5 py-5 space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-[0.55rem] font-black uppercase tracking-[0.4em] text-black/50">Your on-chain reputation breakdown and history</p>
+            <span className="text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/40">
+              {currentChain?.toUpperCase() ?? 'CHAIN'}
+            </span>
+          </div>
+          <h1 className="text-2xl font-black text-black">Passport Score</h1>
+          <div className="flex flex-wrap gap-4 text-sm text-black/60">
+            <span>Wallet {formatAddress(currentUserAddress)}</span>
+            <span>Attestation reputation</span>
+          </div>
+        </section>
 
-        {/* Score Overview - Load first */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {basicError ? (
-            <div className="md:col-span-3 rounded-2xl border border-red-200/60 bg-red-50/80 backdrop-blur p-6 shadow-sm">
-              <div className="flex items-center justify-center py-8">
-                <Shield className="w-8 h-8 text-red-500 mr-3" />
-                <span className="text-red-600">Error loading basic data: {basicError}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+          <section className="border border-black bg-white px-5 py-5 space-y-3">
+            {basicError ? (
+              <div className="border border-black/40 bg-white px-4 py-3 text-sm text-red-700">
+                Error loading score data: {basicError}
               </div>
-            </div>
-          ) : basicData ? (
-            <>
-              <div className="md:col-span-2 rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">Current Score</h2>
-                  <div className={`px-3 py-1 rounded-full text-sm font-bold ${grade.bg} ${grade.color}`}>
+            ) : basicData ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Current score</p>
+                  <span className={`text-[0.6rem] font-black uppercase tracking-[0.3em] px-3 py-1 border border-black ${grade.bg} ${grade.color}`}>
                     Grade {grade.grade}
-                  </div>
+                  </span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="text-5xl font-bold text-gray-900">{basicData.score.toFixed(2)}</div>
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-green-500" />
-                    <span className="font-semibold text-green-600">+2.3%</span>
-                    <span className="text-gray-500 text-sm">vs last period</span>
+                  <div className="text-5xl font-black text-black">{basicData.score.toFixed(2)}</div>
+                  <div className="flex flex-col text-sm text-black/60">
+                    <span>Score snapshot</span>
+                    <span>Last updated {basicData.lastUpdated ? new Date(basicData.lastUpdated).toLocaleString() : '—'}</span>
                   </div>
                 </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="text-sm text-gray-600">
-                    Last updated: {basicData.lastUpdated ? new Date(basicData.lastUpdated).toLocaleString() : 'Unknown'}
-                  </div>
+                <div className="flex items-center gap-3 text-xs text-black/60">
+                  <TrendingUp className="w-4 h-4 text-[#2792FF]" />
+                  <span>Reliable reputation for attestations</span>
                 </div>
-              </div>
-              
-              <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Protocols</span>
-                    <span className="font-semibold">{basicData.protocols || 0}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Total Volume</span>
-                    <span className="font-semibold">${basicData.volume ? (basicData.volume / 1000).toFixed(0) + 'K' : '0'}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Badges</span>
-                    <span className="font-semibold">{basicData.badges?.earned || 0}/{basicData.badges?.total || 0}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Total Trades</span>
-                    <span className="font-semibold">47</span>
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
+              </>
+            ) : (
               <ScoreSkeleton />
+            )}
+          </section>
+
+          <section className="border border-black bg-white px-5 py-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Quick stats</p>
+              <span className="text-[0.6rem] uppercase tracking-[0.3em] text-black/40">Summary</span>
+            </div>
+            {basicLoading ? (
               <StatsSkeleton />
-            </>
-          )}
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {quickStats.map((stat) => (
+                  <div key={stat.label} className="border border-black px-3 py-2 space-y-1">
+                    <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60 flex items-center gap-2">
+                      <span>{stat.emoji}</span>
+                      {stat.label}
+                    </p>
+                    <p className="text-xl font-black text-black">{stat.value}</p>
+                    <p className="text-[0.65rem] text-black/40 uppercase tracking-[0.2em]">{stat.helper}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            {/* Score History Chart - Load second */}
-            {scoreHistoryError ? (
-              <div className="rounded-2xl border border-red-200/60 bg-red-50/80 backdrop-blur p-6 shadow-sm">
-                <div className="flex items-center justify-center py-8">
-                  <Shield className="w-8 h-8 text-red-500 mr-3" />
-                  <span className="text-red-600">Error loading score history: {scoreHistoryError}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+          <div className="space-y-6">
+            <section className="border border-black bg-white px-5 py-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Score history</p>
+                <div className="flex gap-2 text-xs font-black uppercase tracking-[0.2em]">
+                  {['24h', '7d', '30d', '90d'].map((range) => (
+                    <button
+                      key={range}
+                      onClick={() => setSelectedTimeRange(range)}
+                      className={`px-3 py-1 border border-black text-[0.55rem] ${selectedTimeRange === range ? 'bg-black text-white' : 'bg-white text-black'}`}
+                    >
+                      {range}
+                    </button>
+                  ))}
                 </div>
               </div>
-            ) : scoreHistoryData ? (
-              <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">Score History</h2>
-                  <div className="flex gap-2">
-                    {['24h', '7d', '30d', '90d'].map((range) => (
-                      <button
-                        key={range}
-                        onClick={() => setSelectedTimeRange(range)}
-                        className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                          selectedTimeRange === range
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'text-gray-600 hover:bg-gray-100'
-                        }`}
-                      >
-                        {range}
-                      </button>
-                    ))}
-                  </div>
+              {scoreHistoryError ? (
+                <div className="border border-black/40 px-4 py-3 text-sm text-red-700">
+                  Error loading history: {scoreHistoryError}
                 </div>
-                <div className="h-64 relative">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full h-full bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg flex items-end justify-between p-4">
-                      {scoreHistoryData?.scoreHistory && scoreHistoryData.scoreHistory.length > 0 ? (
-                        scoreHistoryData.scoreHistory.map((point: ScoreHistoryPoint, index: number) => (
-                          <div key={index} className="flex flex-col items-center group relative">
-                            <div
-                              className="w-8 bg-blue-500 rounded-t hover:bg-blue-600 transition-colors cursor-pointer"
-                              style={{ height: `${(Number(point.score) / 100) * 200}px` }}
-                            />
-                            <div className="text-xs text-gray-600 mt-2">
-                              {new Date(point.date).getDate()}
-                            </div>
-                            
-                            {/* Tooltip */}
-                            <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                              <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
-                                <div className="font-semibold">Score: {Number(point.score).toFixed(1)}</div>
-                                <div className="text-gray-300">
-                                  {new Date(point.date).toLocaleDateString('en-US', { 
-                                    month: 'short', 
-                                    day: 'numeric',
-                                    year: 'numeric'
-                                  })}
-                                </div>
-                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="flex items-center justify-center h-full">
-                          <span className="text-gray-500">No score history available</span>
+              ) : scoreHistoryLoading ? (
+                <ChartSkeleton />
+              ) : scoreHistoryData ? (
+                <div className="h-48 flex items-end gap-3">
+                  {scoreHistoryData.scoreHistory && scoreHistoryData.scoreHistory.length > 0 ? (
+                    scoreHistoryData.scoreHistory.map((point: ScoreHistoryPoint, index: number) => {
+                      const height = Math.min(Math.max((Number(point.score) / 100) * 100, 10), 100)
+                      return (
+                        <div key={index} className="flex flex-col items-center gap-1">
+                          <div className="w-6 bg-black" style={{ height: `${height}%` }} />
+                          <span className="text-[0.6rem] text-black/40">
+                            {new Date(point.date).getDate()}
+                          </span>
                         </div>
-                      )}
+                      )
+                    })
+                  ) : (
+                    <div className="flex-1 border border-black/20 rounded px-4 py-8 text-center text-sm text-black/60">
+                      No score data yet
                     </div>
-                  </div>
+                  )}
                 </div>
-              </div>
-            ) : (
-              <ChartSkeleton />
-            )}
+              ) : (
+                <ChartSkeleton />
+              )}
+            </section>
 
-            {/* On-chain Activity - Load third */}
-            {activityError ? (
-              <div className="rounded-2xl border border-red-200/60 bg-red-50/80 backdrop-blur p-6 shadow-sm">
-                <div className="flex items-center justify-center py-8">
-                  <Shield className="w-8 h-8 text-red-500 mr-3" />
-                  <span className="text-red-600">Error loading activity: {activityError}</span>
-                </div>
+            <section className="border border-black bg-white px-5 py-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">On-chain activity</p>
+                <span className="text-[0.6rem] text-black/40">Latest 5 events</span>
               </div>
-            ) : activityData ? (
-              <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-4 sm:p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">On-chain Activity</h2>
+              {activityError ? (
+                <div className="border border-black/40 px-4 py-3 text-sm text-red-700">
+                  Activity load error: {activityError}
+                </div>
+              ) : activityLoading ? (
+                <ActivitySkeleton />
+              ) : activityData ? (
                 <div className="space-y-3">
-                  {activityData?.recentActivity && activityData.recentActivity.length > 0 ? (
+                  {activityData.recentActivity && activityData.recentActivity.length > 0 ? (
                     activityData.recentActivity.map((activity: ActivityItem, index: number) => (
-                      <div key={index} className="flex items-start sm:items-center gap-3 p-2 sm:p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-                        <div className={`w-2 h-2 rounded-full mt-1.5 sm:mt-0 ${
-                          activity.status === 'success' ? 'bg-green-500' : 'bg-red-500'
-                        }`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
-                            <span className="font-medium text-gray-900 text-sm">{activity.action}</span>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-gray-500">on</span>
-                              <span className="text-xs font-medium text-blue-600">{activity.protocol && activity.protocol.includes('0x') ? activity.protocol.slice(0, 6) + '...' + activity.protocol.slice(-4) : activity.protocol}</span>
-                            </div>
-                          </div>
-                          <div className="text-xs text-gray-600 mb-2 sm:mb-0">
-                            {activity.amount} • {activity.token} • {activity.time}
-                          </div>
-                          <div className="text-xs text-gray-400 font-mono">
-                            {activity.txHash ? (
-                              <a 
-                                href={`${getExplorerTxUrl(currentChain)}/${activity.txHash}?network=mainnet`} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="font-mono text-blue-600 hover:text-blue-700 transition-colors duration-200 break-all"
-                              >
-                                {activity.txHash}
-                              </a>
-                            ) : 'N/A'}
-                          </div>
+                      <div key={index} className="border border-black px-4 py-3 space-y-1">
+                        <div className="flex items-center justify-between text-sm font-black text-black/70">
+                          <span>🚀 {activity.action}</span>
+                          <span className="text-[0.65rem] uppercase tracking-[0.2em] text-black/40">{activity.status}</span>
+                        </div>
+                        <div className="text-xs text-black/50">{activity.amount} • {activity.token}</div>
+                        <div className="text-[0.65rem] text-black/40 flex items-center justify-between">
+                          <span>{activity.time}</span>
+                          {activity.txHash ? (
+                            <a
+                              href={`${getExplorerTxUrl(currentChain)}/${activity.txHash}?network=mainnet`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-blue-600 underline"
+                            >
+                              {activity.txHash.slice(0, 6)}...{activity.txHash.slice(-4)}
+                            </a>
+                          ) : (
+                            'N/A'
+                          )}
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-4 text-gray-500">No recent activity available</div>
+                    <div className="text-sm text-black/50 text-center py-4">No activity available</div>
                   )}
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                    View all transactions →
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <ActivitySkeleton />
-            )}
+              ) : (
+                <ActivitySkeleton />
+              )}
+            </section>
 
-            {/* Factor Breakdown - Load after activity */}
-            {basicData ? (
-              <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Factor Breakdown</h2>
-                <div className="space-y-4">
+            {basicData && (
+              <section className="border border-black bg-white px-5 py-5 space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Factor breakdown</p>
+                  <span className="text-[0.6rem] text-black/40">Components</span>
+                </div>
+                <div className="space-y-3">
                   {basicData.breakdown ? (
-                    Object.entries(basicData.breakdown).map(([key, value], index) => {
+                    Object.entries(basicData.breakdown).map(([key, value], index: number) => {
                       const factorNames = {
-                        longevity: { name: 'Longevity', color: 'bg-orange-500', description: 'Account age and sustained activity' },
-                        balance: { name: 'Balance', color: 'bg-green-500', description: 'Account balance and holdings' },
-                        activity: { name: 'Activity', color: 'bg-blue-500', description: 'Trading frequency and consistency' },
-                        diversity: { name: 'Diversity', color: 'bg-purple-500', description: 'Number of protocols interacted with' },
-                        volume: { name: 'Volume', color: 'bg-yellow-500', description: 'Total trading volume across protocols' },
-                        complexity: { name: 'Complexity', color: 'bg-red-500', description: 'Advanced DeFi interactions' },
-                        social: { name: 'Social', color: 'bg-pink-500', description: 'Social reputation and badges' }
-                      };
-                      
-                      const factor = factorNames[key as keyof typeof factorNames];
-                      if (!factor) return null;
-                      
-                      const scoreValue = Number(value);
-                      const maxScore = key === 'activity' ? 20 : key === 'diversity' ? 18 : key === 'volume' ? 15 : key === 'social' ? 15 : key === 'complexity' ? 12 : 10;
-                      const percentage = (scoreValue / maxScore) * 100;
-                      
+                        longevity: { name: 'Longevity', description: 'Account age & activity' },
+                        balance: { name: 'Balance', description: 'Holdings & liquidity' },
+                        activity: { name: 'Activity', description: 'Frequency & streaks' },
+                        diversity: { name: 'Diversity', description: 'Protocols engaged' },
+                        volume: { name: 'Volume', description: 'Trading flow' },
+                        complexity: { name: 'Complexity', description: 'Advanced interactions' },
+                        social: { name: 'Social', description: 'Reputation & badges' },
+                      }
+                      const factor = factorNames[key as keyof typeof factorNames]
+                      if (!factor) return null
+                      const scoreValue = Number(value)
+                      const fill = Math.min(Math.max(scoreValue, 0), 100)
                       return (
-                        <div key={index} className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <div className={`w-3 h-3 rounded-full ${factor.color} flex-shrink-0`} />
-                            <div className="min-w-0 flex-1">
-                              <div className="font-medium text-gray-900">{factor.name}</div>
-                              <div className="text-sm text-gray-600">{factor.description}</div>
-                            </div>
+                        <div key={index} className="border border-black/30 px-3 py-3 space-y-1">
+                          <div className="flex items-center justify-between text-sm font-black text-black">
+                            <span>{factor.name}</span>
+                            <span>{scoreValue.toFixed(1)}</span>
                           </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
-                              <div
-                                className={`h-2 rounded-full ${factor.color}`}
-                                style={{ width: `${Math.min(percentage, 100)}%` }}
-                              />
-                            </div>
-                            <span className="font-semibold text-gray-900 whitespace-nowrap text-right w-12">{scoreValue.toFixed(2)}</span>
+                          <div className="h-2 border border-black bg-[#F4F7FF]">
+                            <div className="h-2 bg-[#2792FF]" style={{ width: `${fill}%` }} />
                           </div>
+                          <p className="text-[0.65rem] text-black/40">{factor.description}</p>
                         </div>
-                      );
+                      )
                     })
                   ) : (
-                    <div className="text-center py-4 text-gray-500">No breakdown data available</div>
+                    <div className="text-sm text-black/50 text-center py-4">No breakdown data available</div>
                   )}
                 </div>
-              </div>
-            ) : null}
+              </section>
+            )}
           </div>
 
           <div className="space-y-6">
-            {/* Badges - Load fourth */}
-            {badgesError ? (
-              <div className="rounded-2xl border border-red-200/60 bg-red-50/80 backdrop-blur p-6 shadow-sm">
-                <div className="flex items-center justify-center py-8">
-                  <Shield className="w-8 h-8 text-red-500 mr-3" />
-                  <span className="text-red-600">Error loading badges: {badgesError}</span>
-                </div>
+            <section className="border border-black bg-white px-5 py-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Badges & achievements</p>
+                <span className="text-[0.6rem] text-black/40">Earned</span>
               </div>
-            ) : badgesData ? (
-              <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Badges & Achievements</h2>
-                <div className="space-y-4">
-                  {badgesData?.badges && badgesData.badges.length > 0 ? (
-                    badgesData.badges
-                      .sort((a: Badge, b: Badge) => {
-                        // Sort by progress: completed first, then by progress from high to low
-                        if (a.earned && !b.earned) return -1;
-                        if (!a.earned && b.earned) return 1;
-                        if (a.earned && b.earned) {
-                          // If both completed, sort by completion time (newest first)
-                          const aTime = a.earnedAt ? new Date(a.earnedAt).getTime() : 0;
-                          const bTime = b.earnedAt ? new Date(b.earnedAt).getTime() : 0;
-                          return bTime - aTime;
-                        }
-                        // If both not completed, sort by progress from high to low
-                        return b.progress - a.progress;
-                      })
-                      .map((badge: Badge) => (
-                        <div key={badge.id} className={`p-3 rounded-lg border ${
-                          badge.earned ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
-                        }`}>
-                          <div className="flex items-center gap-3">
-                            <span className="text-2xl">{badge.icon}</span>
-                            <div className="flex-1">
-                              <div className="font-medium text-gray-900">{badge.name}</div>
-                              <div className="text-sm text-gray-600">{badge.description}</div>
-                              {badge.earned ? (
-                                <div className="text-xs text-green-600 mt-1">
-                                  Earned on {badge.earnedAt ? new Date(badge.earnedAt).toLocaleDateString() : 'Unknown'}
-                                </div>
-                              ) : (
-                                <div className="mt-2">
-                                  <div className="flex justify-between text-xs text-gray-600 mb-1">
-                                    <span>Progress</span>
-                                    <span>{badge.progress}%</span>
-                                  </div>
-                                  <div className="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div
-                                      className="bg-blue-500 h-1.5 rounded-full"
-                                      style={{ width: `${badge.progress}%` }}
-                                    />
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                  ) : (
-                    <div className="text-center py-4 text-gray-500">No badges available</div>
-                  )}
+              {badgesError ? (
+                <div className="border border-black/40 px-4 py-3 text-sm text-red-700">
+                  Badge load error: {badgesError}
                 </div>
-              </div>
-            ) : (
-              <BadgesSkeleton />
-            )}
-
-            {/* Optimization Tips - Load last */}
-            {protocolsError ? (
-              <div className="rounded-2xl border border-red-200/60 bg-red-50/80 backdrop-blur p-6 shadow-sm">
-                <div className="flex items-center justify-center py-8">
-                  <Shield className="w-8 h-8 text-red-500 mr-3" />
-                  <span className="text-red-600">Error loading tips: {protocolsError}</span>
-                </div>
-              </div>
-            ) : protocolsData ? (
-              <div className="rounded-2xl border border-blue-200/60 bg-white/80 backdrop-blur p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Optimization Tips</h2>
+              ) : badgesLoading ? (
+                <BadgesSkeleton />
+              ) : badgesData ? (
                 <div className="space-y-3">
-                  {protocolsData?.optimizationTips && protocolsData.optimizationTips.length > 0 ? (
-                    protocolsData.optimizationTips.map((tip: string, index: number) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <Zap className="w-5 h-5 text-blue-500 mt-0.5" />
-                        <div>
-                          <div className="font-medium text-gray-900">Improvement Suggestion</div>
-                          <div className="text-sm text-gray-600">{tip}</div>
+                  {badgesData.badges && badgesData.badges.length > 0 ? (
+                    badgesData.badges.map((badge: Badge) => (
+                      <div
+                        key={badge.id}
+                        className={`border border-black/30 px-3 py-3 space-y-1 ${badge.earned ? 'bg-[#E2FFE1]' : 'bg-white'}`}
+                      >
+                        <div className="flex items-center justify-between text-sm font-black text-black">
+                          <span>{badge.icon} {badge.name}</span>
+                          <span className="text-[0.65rem] text-black/50">{badge.category}</span>
                         </div>
+                        <p className="text-xs text-black/50">{badge.description}</p>
+                        {!badge.earned && (
+                          <div className="h-1 bg-black/10 rounded-full">
+                            <div className="h-1 bg-[#2792FF]" style={{ width: `${badge.progress}%` }} />
+                          </div>
+                        )}
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-4 text-gray-500">No optimization tips available</div>
+                    <div className="text-sm text-black/50 text-center py-4">No badges yet</div>
                   )}
                 </div>
+              ) : (
+                <BadgesSkeleton />
+              )}
+            </section>
+
+            <section className="border border-black bg-white px-5 py-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Optimization tips</p>
+                <span className="text-[0.6rem] text-black/40">Protocol focus</span>
               </div>
-            ) : (
-              <TipsSkeleton />
-            )}
+              {protocolsError ? (
+                <div className="border border-black/40 px-4 py-3 text-sm text-red-700">
+                  Tips load error: {protocolsError}
+                </div>
+              ) : protocolsLoading ? (
+                <TipsSkeleton />
+              ) : protocolsData ? (
+                <div className="space-y-3">
+                  {protocolsData.optimizationTips && protocolsData.optimizationTips.length > 0 ? (
+                    protocolsData.optimizationTips.map((tip: string, index: number) => (
+                      <div key={index} className="flex items-start gap-3 text-sm text-black/70">
+                        <Zap className="w-4 h-4 text-[#2792FF]" />
+                        <div>{tip}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-sm text-black/50 text-center py-4">No tips available</div>
+                  )}
+                </div>
+              ) : (
+                <TipsSkeleton />
+              )}
+            </section>
           </div>
         </div>
       </main>
