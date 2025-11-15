@@ -1,21 +1,19 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { useCurrentWallet, useSignAndExecuteTransaction, useSuiClientContext, useCurrentAccount } from '@mysten/dapp-kit';
+import { useCurrentWallet, useSignAndExecuteTransaction, useCurrentAccount } from '@mysten/dapp-kit';
 import { Transaction } from "@mysten/sui/transactions";
 import { getSchemaRegistryId, getPackageId, Network } from "@moveas/sdk"
 import { Header } from "@/components/header"
 import { bcs } from "@mysten/bcs"
-import { getNetwork, getExplorerUrl, getExplorerTxUrl } from "@/utils"
+import { getNetwork, getExplorerTxUrl } from "@/utils"
 import { AlertDialog, Flex } from "@radix-ui/themes"
 import { Loader2 } from "lucide-react"
-import { useSchemas, useAttestations } from '@/api';
 import { useChain, Chain } from "@/components/providers/chain-provider";
 
 interface Field {
@@ -27,9 +25,6 @@ interface Field {
 export function CreateSuiSchema({chain}: {chain: Chain}) {
   const network = getNetwork();
   
-  // const { mutate: mutateSchemas } = useSchemas(chain, getNetwork());
-  // const { mutate: mutateAttestations } = useAttestations(chain, getNetwork());
-
   const { isConnected, currentWallet, connectionStatus } = useCurrentWallet();
   const currentAccount = useCurrentAccount();
 
@@ -184,211 +179,213 @@ export function CreateSuiSchema({chain}: {chain: Chain}) {
   }
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-blue-50/30">
+    <div className="min-h-screen bg-white text-black">
       <Header />
-      <main className="container mx-auto px-4 py-8 md:py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent leading-tight mb-4">
-            Create a Schema
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 font-medium max-w-3xl mx-auto">
-            Design and deploy custom attestation schemas for your specific use case
-          </p>
-        </div>
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        <section className="border border-black bg-[#F4F7FF] px-6 py-5 space-y-3">
+          <div className="flex flex-col md:flex-row justify-between gap-4">
+            <div className="space-y-2">
+              <p className="text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/60">Schema Creation</p>
+              <h1 className="text-3xl font-black">Define your attestation schema</h1>
+              <p className="text-sm font-bold text-black/60">Publish a reusable schema on {chain.toUpperCase()}.</p>
+              <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/40">{fields.length} field(s) defined</p>
+            </div>
+            <div className="text-right space-y-1 text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/40">
+              <span>{network?.toUpperCase() ?? chain.toUpperCase()}</span>
+              <span>{isRevocable ? 'Revocable' : 'Non-revocable'}</span>
+            </div>
+          </div>
+        </section>
 
-        <Card className="w-full max-w-4xl mx-auto bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-100/30">
-          <CardHeader className="p-8 border-b border-blue-100/30">
-            <CardTitle className="text-3xl font-bold text-gray-800">Schema Configuration</CardTitle>
-            <CardDescription className="text-lg text-gray-600 mt-2">
-              Add fields below that are relevant to your use case. Each field will define the structure of your attestation schema.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-8 space-y-6">
-            {/* Schema Fields */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Schema Fields</h3>
-              {fields.map((field, index) => (
-                <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 bg-blue-50/30 rounded-xl border border-blue-100/50">
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700 mb-2 block">Field Name</Label>
+        <section className="border border-black bg-white px-5 py-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Schema Fields</p>
+              <p className="text-xs font-bold text-black/50">Name each field and select its type.</p>
+            </div>
+            <span className="text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/40">Editable</span>
+          </div>
+          <div className="space-y-3">
+            {fields.map((field, index) => (
+              <div key={index} className="border border-black px-4 py-4 space-y-3">
+                <div className="flex items-center justify-between text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/50">
+                  <span>Field #{index + 1}</span>
+                  <span>{field.array ? 'Vector' : 'Scalar'}</span>
+                </div>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <div className="space-y-1">
+                    <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Field Name</Label>
                     <Input
                       placeholder="Enter field name"
                       value={field.name}
-                      onChange={(e) => handleFieldChange(index, "name", e.target.value)}
-                      className="border-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/50 rounded-lg"
+                      onChange={(e) => handleFieldChange(index, 'name', e.target.value)}
+                      className="w-full h-11 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
                     />
                   </div>
-                  <div>
-                    <Label className="text-sm font-medium text-blue-700 mb-2 block">Field Type</Label>
-                    <Select
-                      value={field.type}
-                      onValueChange={(value) => handleFieldChange(index, "type", value)}
-                    >
-                      <SelectTrigger className="border-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/50 rounded-lg">
+                  <div className="space-y-1">
+                    <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Field Type</Label>
+                    <Select value={field.type} onValueChange={(value) => handleFieldChange(index, 'type', value)}>
+                      <SelectTrigger className="border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="u8">u8</SelectItem>
-                        <SelectItem value="u16">u16</SelectItem>
-                        <SelectItem value="u32">u32</SelectItem>
-                        <SelectItem value="u64">u64</SelectItem>
-                        <SelectItem value="u128">u128</SelectItem>
-                        <SelectItem value="u256">u256</SelectItem>
-                        <SelectItem value="bool">Bool</SelectItem>
-                        <SelectItem value="String">String</SelectItem>
-                        <SelectItem value="address">Address</SelectItem>
+                        {['u8', 'u16', 'u32', 'u64', 'u128', 'u256', 'bool', 'string', 'address'].map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       checked={field.array}
-                      onCheckedChange={(checked) => handleFieldChange(index, "array", checked)}
-                      className="border-blue-200/50 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                      onCheckedChange={(checked) => handleFieldChange(index, 'array', Boolean(checked))}
+                      className="border border-black rounded-none"
                     />
-                    <Label className="text-sm font-medium text-blue-700">Array Type</Label>
+                    <span className="text-[0.7rem] font-black uppercase tracking-[0.3em] text-black/60">Array</span>
                   </div>
                 </div>
-              ))}
-              <Button 
-                variant="outline" 
-                onClick={handleAddField}
-                className="w-full md:w-auto bg-blue-50/70 hover:bg-blue-100/70 text-blue-600 border-blue-200/50 hover:border-blue-300/50 rounded-xl px-6 py-3 font-semibold transition-all duration-200"
-              >
-                + Add Field
-              </Button>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={handleAddField}
+            className="w-full border border-black bg-[#D0E8FF] text-black font-black uppercase tracking-[0.3em] px-4 py-2"
+          >
+            + Add Field
+          </button>
+        </section>
+
+        <section className="border border-black bg-white px-5 py-5 space-y-4">
+          <div>
+            <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Schema Metadata</p>
+            <p className="text-xs font-bold text-black/50">Provide supplementary details for your schema.</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-1">
+              <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Name (Optional)</Label>
+              <Input
+                type="text"
+                placeholder="Set the name of the schema"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+              />
             </div>
-
-            {/* Schema Metadata */}
-            <div className="space-y-6 pt-6 border-t border-blue-100/30">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">Schema Metadata</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="label" className="text-sm font-medium text-blue-700">Name (Optional)</Label>
-                  <Input
-                    id="label"
-                    placeholder="Set the name of the schema"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="border-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/50 rounded-lg"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-blue-700">URL (Optional)</Label>
-                  <Input
-                    placeholder="Set the URL of the schema"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    className="border-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/50 rounded-lg"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-blue-700">Description (Optional)</Label>
-                <Input
-                  placeholder="Set the description of the schema"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="border-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/50 rounded-lg"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-blue-700">Resolver Module (Optional)</Label>
-                <p className="text-sm text-gray-600">
-                  Optional smart contract that gets executed with every attestation of this type. Can be used to verify,
-                  limit, or act upon any attestation.
-                </p>
-                <Input
-                  placeholder="ex: 0x0000000000000000000000000000000000000001::blocklist"
-                  value={resolver}
-                  onChange={(e) => setResolver(e.target.value)}
-                  className="border-blue-200/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/50 rounded-lg"
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-sm font-medium text-blue-700">Revocable</Label>
-                <p className="text-sm text-gray-600">Determine if attestations of this schema can be revoked</p>
-                <div className="flex space-x-4">
-                  <Button 
-                    variant={isRevocable === true ? "default" : "outline"} 
-                    onClick={() => setIsRevocable(true)}
-                    className={isRevocable === true 
-                      ? "bg-blue-500 hover:bg-blue-600 text-white" 
-                      : "bg-blue-50/70 hover:bg-blue-100/70 text-blue-600 border-blue-200/50 hover:border-blue-300/50"
-                    }
-                  >
-                    Yes
-                  </Button>
-                  <Button 
-                    variant={isRevocable === false ? "default" : "outline"} 
-                    onClick={() => setIsRevocable(false)}
-                    className={isRevocable === false 
-                      ? "bg-blue-500 hover:bg-blue-600 text-white" 
-                      : "bg-blue-50/70 hover:bg-blue-100/70 text-blue-600 border-blue-200/50 hover:border-blue-300/50"
-                    }
-                  >
-                    No
-                  </Button>
-                </div>
-              </div>
+            <div className="space-y-1">
+              <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">URL (Optional)</Label>
+              <Input
+                type="text"
+                placeholder="Set the URL of the schema"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+              />
             </div>
-          </CardContent>
-          <CardFooter className="p-8 border-t border-blue-100/30">
-            <Button
-              disabled={!isFormValid() || !isConnected || isLoading}
-              onClick={async () => {
-                try {
-                  await handleMoveCall(fields, isRevocable);
-                } catch (error) {
-                  console.error('Transaction failed:', error);
-                }
-              }}
-              className="w-full md:w-auto bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-1 md:col-span-2">
+              <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Description (Optional)</Label>
+              <Input
+                type="text"
+                placeholder="Set the description of the schema"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+              />
+            </div>
+          </div>
+          <div className="space-y-1">
+            <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Resolver Address (Optional)</Label>
+            <Input
+              type="text"
+              placeholder="Optional smart contract executed per attestation"
+              value={resolver}
+              onChange={(e) => setResolver(e.target.value)}
+              className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+            />
+          </div>
+        </section>
+
+        <section className="border border-black bg-[#F4F7FF] px-5 py-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="revocable"
+                checked={isRevocable}
+                onChange={() => setIsRevocable(!isRevocable)}
+                className="w-4 h-4 border border-black"
+              />
+              <Label htmlFor="revocable" className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">
+                Make schema revocable
+              </Label>
+            </div>
+            <span className="text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/50">Tx: {digest || 'Pending'}</span>
+          </div>
+          <div>
+            <button
+              type="button"
+              onClick={() => handleMoveCall(fields, isRevocable)}
+              disabled={!isFormValid() || isLoading || !isConnected}
+              className="w-full md:w-auto border border-black bg-[#2792FF] text-white px-6 py-3 text-xs font-black uppercase tracking-[0.3em] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  Creating...
                 </>
               ) : (
                 'Create Schema'
               )}
-            </Button>
-          </CardFooter>
-        </Card>
-
-        <AlertDialog.Root open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-          <AlertDialog.Content className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-blue-100/50">
-            <AlertDialog.Title className="text-2xl font-bold text-gray-800">Transaction Result</AlertDialog.Title>
-            <AlertDialog.Description className="text-gray-600 mt-2">
-              {alertMessage}
-            </AlertDialog.Description>
-            <Flex gap="3" mt="4" justify="end">
-              <AlertDialog.Cancel>
-                <Button variant="outline" className="bg-gray-50/70 hover:bg-gray-100/70 text-gray-600 border-gray-200/50 hover:border-gray-300/50 rounded-lg">
-                  Close
-                </Button>
-              </AlertDialog.Cancel>
-              {digest && (
-                <AlertDialog.Action>
-                  <Button 
-                    onClick={() => window.open(`${getExplorerTxUrl(chain)}/${digest}`, '_blank')}
-                    className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
-                  >
-                    View Transaction
-                  </Button>
-                </AlertDialog.Action>
-              )}
-            </Flex>
-          </AlertDialog.Content>
-        </AlertDialog.Root>
+            </button>
+          </div>
+        </section>
       </main>
+
+      {digest && (
+        <section className="max-w-6xl mx-auto px-4 py-5 space-y-3 border border-black bg-[#F4FFF9]">
+          <div className="flex items-center justify-between text-[0.6rem] font-black uppercase tracking-[0.3em] text-black/50">
+            <span>Schema published</span>
+            <span>Digest</span>
+          </div>
+          <p className="text-sm font-black text-black break-all">{digest}</p>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href={`${getExplorerTxUrl(chain)}/${digest}`}
+              target="_blank"
+              rel="noreferrer"
+              className="border border-black px-4 py-2 text-xs font-black uppercase tracking-[0.3em]"
+            >
+              View on explorer
+            </a>
+            <Link
+              href="/schemas"
+              className="border border-black px-4 py-2 text-xs font-black uppercase tracking-[0.3em]"
+            >
+              View all schemas
+            </Link>
+          </div>
+        </section>
+      )}
+
+      <AlertDialog.Root open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialog.Content className="bg-white border border-black px-6 py-5 max-w-md mx-auto">
+          <AlertDialog.Title className="text-lg font-black text-black mb-2">
+            {alertMessage.includes('successfully') ? 'Success' : 'Notice'}
+          </AlertDialog.Title>
+          <AlertDialog.Description className="text-black/70 mb-4 whitespace-pre-wrap">
+            {alertMessage}
+          </AlertDialog.Description>
+          <Flex gap="3" justify="end">
+            <AlertDialog.Cancel>
+              <button className="px-4 py-2 border border-black text-xs font-black uppercase tracking-[0.3em]">Close</button>
+            </AlertDialog.Cancel>
+          </Flex>
+        </AlertDialog.Content>
+      </AlertDialog.Root>
     </div>
   )
 }

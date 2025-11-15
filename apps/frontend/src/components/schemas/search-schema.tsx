@@ -1,152 +1,121 @@
 'use client'
 
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react"
 import Link from "next/link"
 import { Header } from "@/components/header"
-import { SearchIconBlack } from "../icons"
 import { searchSchemas } from "@/api/schema"
 import { getNetwork } from "@/utils/utils"
-import { useChain, Chain } from "@/components/providers/chain-provider";
+import { Chain } from "@/components/providers/chain-provider"
 
 interface SearchResult {
-  id: string;
-  uid: string;
+  id: string
+  uid: string
 }
 
-export function SearchSchema({chain}: {chain: Chain}) {
-  const network = getNetwork();
+const featuredSchemas = [
+  { id: '7', label: 'Write a message', uid: '0x3969bb...0ac0822f' },
+  { id: '8', label: 'Make a statement', uid: '0xf58b8b...1456cafe' },
+  { id: '14', label: 'Accredited investor', uid: '0x080b93...3ae73f19' },
+  { id: '15', label: 'Sign document', uid: '0xd3f24e...6a226a80' },
+]
+
+export function SearchSchema({ chain }: { chain: Chain }) {
+  const network = getNetwork()
   const [searchInput, setSearchInput] = useState("")
-  const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
+  const [searchResult, setSearchResult] = useState<SearchResult | null>(null)
+  const [isSearching, setIsSearching] = useState(false)
 
   const handleSearch = async () => {
-    console.log('searchInput', searchInput)
+    setIsSearching(true)
     if (!searchInput.trim()) {
-      console.log('searchInput is empty')
       setSearchResult(null)
+      setIsSearching(false)
       return
     }
 
-    let result: any
-
     const response = await searchSchemas(chain, network as any, { searchInput })
-    let schemasResult = response.success ? response.data : []
-    console.log('schemasResult', schemasResult)
+    const schemasResult = response.success ? response.data : []
 
     if (schemasResult && schemasResult.length > 0) {
       const schema = schemasResult[0]
       setSearchResult({
         id: schema.id.toString(),
-        uid: schema.address
+        uid: schema.address,
       })
     } else {
       setSearchResult(null)
-      console.log("No matching schema found.")
     }
+
+    setIsSearching(false)
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-gradient-to-br from-blue-50/30 via-white to-blue-50/30">
+    <div className="min-h-screen bg-white text-black">
       <Header />
-      <main className="flex-grow flex flex-col items-center w-full p-4 md:p-8 lg:p-12 space-y-8 mt-16">
-        {/* Hero Section */}
-        <header className="text-center space-y-4">
-          <p className="text-sm text-blue-600 font-semibold uppercase tracking-wider">MAKE AN ATTESTATION</p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent leading-tight">
-            Choose your attestation schema
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 font-medium max-w-2xl">
-            Search and select the perfect schema for your attestation needs
-          </p>
-        </header>
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        <section className="border border-black px-6 py-5 space-y-3 bg-white">
+          <p className="text-[0.6rem] font-black uppercase tracking-[0.4em] text-black/50">Schema Search</p>
+          <h1 className="text-3xl font-black">Make an attestation</h1>
+          <p className="text-sm font-bold text-black/60">Use existing schemas to issue attestations quickly.</p>
+        </section>
 
-        {/* Search Section */}
-        <div className="w-full max-w-3xl p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-100/30">
-          <h2 className="text-center text-2xl font-bold text-gray-800 mb-2">Search for a schema</h2>
-          <p className="text-center text-gray-600 font-medium mb-6">Type in the schema # or the UID of the schema</p>
-          <div className="relative">
-            <Input
+        <section className="border border-black bg-[#F5F8FF] px-5 py-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Search By Schema ID / UID</p>
+            <span className="text-[0.6rem] font-black tracking-[0.3em] text-black/40">{chain.toUpperCase()}</span>
+          </div>
+          <div className="flex flex-col md:flex-row gap-3">
+            <input
               type="text"
-              placeholder="Search by Schema # / UID"
-              className="w-full pl-6 pr-20 py-4 border border-blue-200/50 rounded-xl focus:border-blue-400 focus:ring-2 focus:ring-blue-200/50 transition-all duration-200 text-lg"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="e.g. 7 or 0x3969bb..."
+              className="flex-1 h-12 border border-black bg-white px-4 text-sm font-bold uppercase tracking-[0.2em] focus:outline-none"
             />
-            <Button
-              variant="default"
-              className="absolute right-1 top-1 h-12 px-6 rounded-lg bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-semibold transition-all duration-200"
+            <button
               onClick={handleSearch}
+              disabled={isSearching}
+              className="h-12 border border-black bg-[#2792FF] text-white font-black text-sm uppercase tracking-[0.4em] disabled:opacity-60"
             >
-              <SearchIconBlack className="w-5 h-5" />
-            </Button>
+              {isSearching ? 'SEARCHING...' : 'SEARCH'}
+            </button>
           </div>
-        </div>
+          <p className="text-xs font-bold text-black/40">Search both on-chain schema IDs and their UID addresses.</p>
+        </section>
 
-        {/* Search Result Section */}
-        <div className="w-full max-w-3xl p-6 md:p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-100/30">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Search Result</h3>
+        <section className="border border-black bg-white px-6 py-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Search Result</p>
+            <span className="text-[0.6rem] font-black tracking-[0.2em] text-black/40">Latest match</span>
+          </div>
           {searchResult ? (
             <Link href={`/schema/${searchResult.uid}`} className="block">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 sm:p-6 space-y-3 sm:space-y-0 sm:space-x-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl hover:from-blue-100/50 hover:to-indigo-100/50 transition-all duration-200 border border-blue-200/50">
-                <Badge variant="blue" className="bg-blue-100/70 text-blue-700 border-blue-200/50 font-semibold px-4 py-2 rounded-lg text-lg">
-                  #{searchResult.id}
-                </Badge>
-                <div className="w-full sm:w-auto">
-                  <p className="text-sm text-blue-600 font-medium break-all">{searchResult.uid}</p>
-                </div>
+              <div className="border border-black bg-[#D0E8FF] px-5 py-4 space-y-1">
+                <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">#{searchResult.id}</p>
+                <p className="text-sm font-black text-black break-all">{searchResult.uid}</p>
               </div>
             </Link>
           ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-600 mb-4 font-medium">No matching schema found.</p>
-              <Link href="/schemas" className="inline-flex items-center px-6 py-3 bg-blue-50/70 hover:bg-blue-100/70 text-blue-600 font-semibold rounded-xl border border-blue-200/50 transition-all duration-200 hover:scale-105">
-                View all schemas
-              </Link>
-            </div>
+            <div className="border border-black/30 px-4 py-6 text-sm font-bold text-black/60 text-center">No matching schema found yet.</div>
           )}
-        </div>
+        </section>
 
-        {/* Featured Schemas Section */}
-        <div className="w-full max-w-4xl p-6 md:p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-100/30">
-          <p className="text-center font-bold text-lg text-gray-800 mb-6">Don&apos;t know the UID or #? Explore a few featured schemas.</p>
-          <div className="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2">
-            <a href="#" className="flex items-center p-4 space-x-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl hover:from-blue-100/50 hover:to-indigo-100/50 transition-all duration-200 border border-blue-200/50 group">
-              <Badge variant="secondary" className="bg-indigo-100/70 text-indigo-700 border-indigo-200/50 font-semibold">#7</Badge>
-              <div>
-                <p className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">WRITE A MESSAGE</p>
-                <p className="text-sm text-gray-600">0x3969bb...0ac0822f</p>
-              </div>
-            </a>
-            <a href="#" className="flex items-center p-4 space-x-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl hover:from-blue-100/50 hover:to-indigo-100/50 transition-all duration-200 border border-blue-200/50 group">
-              <Badge variant="secondary" className="bg-indigo-100/70 text-indigo-700 border-indigo-200/50 font-semibold">#8</Badge>
-              <div>
-                <p className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">MAKE A STATEMENT</p>
-                <p className="text-sm text-gray-600">0xf58b8b...1456cafe</p>
-              </div>
-            </a>
-            <a href="#" className="flex items-center p-4 space-x-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl hover:from-blue-100/50 hover:to-indigo-100/50 transition-all duration-200 border border-blue-200/50 group">
-              <Badge variant="secondary" className="bg-indigo-100/70 text-indigo-700 border-indigo-200/50 font-semibold">#14</Badge>
-              <div>
-                <p className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">IS AN ACCREDITED INVESTOR</p>
-                <p className="text-sm text-gray-600">0x080b93...3ae73f19</p>
-              </div>
-            </a>
-            <a href="#" className="flex items-center p-4 space-x-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl hover:from-blue-100/50 hover:to-indigo-100/50 transition-all duration-200 border border-blue-200/50 group">
-              <Badge variant="secondary" className="bg-indigo-100/70 text-indigo-700 border-indigo-200/50 font-semibold">#15</Badge>
-              <div>
-                <p className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">SIGN DOCUMENT</p>
-                <p className="text-sm text-gray-600">0xd3f24e...6a226a80</p>
-              </div>
-            </a>
+        <section className="border border-black bg-[#F9FBFF] px-5 py-5 space-y-4">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Need inspiration?</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {featuredSchemas.map((schema) => (
+              <Link
+                href={`/schema/${schema.uid}`}
+                key={schema.id}
+                className="border border-black bg-white px-4 py-4 space-y-1"
+              >
+                <p className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">#{schema.id}</p>
+                <p className="text-base font-black text-black">{schema.label}</p>
+                <p className="text-[0.6rem] font-bold tracking-[0.2em] text-black/40 break-all">{schema.uid}</p>
+              </Link>
+            ))}
           </div>
-          <div className="mt-6 text-center">
-            <Link href="/schemas" className="inline-flex items-center px-6 py-3 bg-blue-50/70 hover:bg-blue-100/70 text-blue-600 font-semibold rounded-xl border border-blue-200/50 transition-all duration-200 hover:scale-105" prefetch={false}>
-              View all schemas
-            </Link>
-          </div>
-        </div>
+        </section>
       </main>
     </div>
   )

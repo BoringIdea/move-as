@@ -1,25 +1,25 @@
 'use client'
 
 import { Input } from "@/components/ui/input"
-import { SearchIcon, TwitterIcon, GitHubIcon } from "@/components/icons"
+import { SearchIcon, GitHubIcon, LinkIcon } from "@/components/icons"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { ConnectButton, useSuiClientContext } from '@mysten/dapp-kit';
+import { ConnectButton } from '@mysten/dapp-kit';
 import { fetchAttestation } from "@/api/attestation"
-import { fetchSchema, searchSchemas } from "@/api/schema"
+import { searchSchemas } from "@/api/schema"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { debounce } from "lodash"
 import Image from 'next/image'
 import { ChainConfig, getChains, getNetwork } from "@/utils/utils"
 import * as Select from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons'
+import { ChevronDownIcon } from '@radix-ui/react-icons'
 import { useChain, Chain } from "@/components/providers/chain-provider"
 import { WalletSelector } from "./WalletSelector"
-import { Menu } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 const chains = getChains()
 
-const hoverStyles = "hover:text-blue-700 hover:underline transition-all duration-300 transform hover:scale-105";
+const hoverStyles = "transition-colors duration-200 hover:text-[#2792FF]"
 
 export function Header() {
   const { currentChain, setCurrentChain } = useChain()
@@ -66,20 +66,16 @@ export function Header() {
     rel?: string;
   }) => {
     const isActive = pathname === href
+    const isExternal = href.startsWith('http')
     return (
       <Link
         href={href}
-        className={`${isActive 
-          ? 'font-bold text-blue-700 border-b-2 border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-2 rounded-lg shadow-sm' 
-          : 'text-gray-700 hover:text-blue-600 font-medium'
-          } ${href === '/attestations' ? 'font-bold' : ''} ${hoverStyles} px-3 py-2 rounded-lg transition-all duration-300 relative overflow-hidden group`}
-        target={target}
-        rel={rel}
+        className={`text-xs font-black uppercase tracking-[0.2em] ${hoverStyles} ${isActive ? 'text-black border-b-2 border-black pb-1' : 'text-black/60'}`}
+        target={isExternal ? '_blank' : target}
+        rel={isExternal ? 'noreferrer noopener' : rel}
+        scroll={false}
       >
-        <span className="relative z-10">{children}</span>
-        {!isActive && (
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/0 via-blue-50/30 to-blue-50/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
-        )}
+        {children}
       </Link>
     )
   }
@@ -177,7 +173,7 @@ export function Header() {
                     </div>
                   </Select.ItemText>
                   <Select.ItemIndicator className="absolute right-4 inline-flex items-center justify-center">
-                    <CheckIcon className="w-5 h-5 text-blue-600" />
+                  <div className="w-5 h-5 text-blue-600" />
                   </Select.ItemIndicator>
                 </Select.Item>
               ))}
@@ -218,17 +214,10 @@ export function Header() {
           <span className="sr-only">MAS</span>
         </a>
         {!isMobile && (
-          <nav className="hidden md:flex items-center gap-3 text-base font-semibold md:gap-2 lg:gap-3 ml-4 mr-2">
+          <nav className="hidden md:flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] md:gap-4 ml-4 mr-2">
             <NavLink href="/attestations">Attestations</NavLink>
             <NavLink href="/schemas">Schemas</NavLink>
             <NavLink href="/passport">Passport</NavLink>
-            <NavLink
-              href="https://move-attestation-service.gitbook.io/move-attestation-service"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Docs
-            </NavLink>
           </nav>
         )}
       </div>
@@ -290,38 +279,48 @@ export function Header() {
         </div>
       )}
 
-      <div className="flex items-center gap-2">
-        {!isMobile && (
-          <>
-            <Link
-              href="https://twitter.com/moveas_xyz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group text-gray-600 hover:bg-gradient-to-r hover:from-blue-100/80 hover:to-indigo-100/80 hover:scale-110 transition-all duration-300 p-2 rounded-lg shadow-sm hover:shadow-md"
+        <div className="flex items-center gap-2">
+          {!isMobile && (
+            <div className="flex items-center gap-2">
+              <Link
+                href="https://github.com/HashIdea/moveas-core"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
+              >
+                <GitHubIcon className="w-4 h-4" />
+              </Link>
+              <Link
+                href="https://move-attestation-service.gitbook.io/move-attestation-service"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
+                aria-label="View Docs"
+              >
+                <LinkIcon className="w-4 h-4" />
+                <span className="sr-only">Docs</span>
+              </Link>
+              <Link
+                href="https://twitter.com/moveas_xyz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
+              >
+                <X className="w-4 h-4" />
+              </Link>
+            </div>
+          )}
+          {chainSelector}
+          {currentChain === "sui" ?  <ConnectButton /> : <WalletSelector />}
+          {isMobile && (
+            <button
+              className="md:hidden p-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-100/80 hover:to-indigo-100/80 transition-all duration-300 shadow-md hover:shadow-lg"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <TwitterIcon className="w-5 h-5 group-hover:text-blue-600 transition-colors duration-300" />
-            </Link>
-            <Link
-              href="https://github.com/HashIdea/moveas-core"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group text-gray-600 hover:bg-gradient-to-r hover:from-gray-100/80 hover:to-blue-100/80 hover:scale-110 transition-all duration-300 p-2 rounded-lg shadow-sm hover:shadow-md"
-            >
-              <GitHubIcon className="w-5 h-5 group-hover:text-gray-800 transition-colors duration-300" />
-            </Link>
-          </>
-        )}
-        {chainSelector}
-        {currentChain === "sui" ?  <ConnectButton /> : <WalletSelector />}
-        {isMobile && (
-          <button
-            className="md:hidden p-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-100/80 hover:to-indigo-100/80 transition-all duration-300 shadow-md hover:shadow-lg"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <Menu className="w-7 h-7 text-blue-700" />
-          </button>
-        )}
-      </div>
+              <Menu className="w-7 h-7 text-blue-700" />
+            </button>
+          )}
+        </div>
 
       {isMobile && (
         <>
@@ -391,22 +390,30 @@ export function Header() {
             >
               Docs
             </NavLink>
-            <div className="flex items-center gap-6 mt-6 pt-6 border-t-2 border-blue-200/50">
-              <Link
-                href="https://twitter.com/moveas_xyz"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-100/80 hover:to-indigo-100/80 hover:scale-110 transition-all duration-300 shadow-md hover:shadow-lg"
-              >
-                <TwitterIcon className="w-7 h-7 text-blue-700 group-hover:text-blue-600 transition-colors duration-300" />
-              </Link>
+            <div className="flex items-center gap-4 mt-6 pt-6 border-t-2 border-blue-200/50">
               <Link
                 href="https://github.com/HashIdea/moveas-core"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-100/80 hover:to-blue-100/80 hover:scale-110 transition-all duration-300 shadow-md hover:shadow-lg"
+                className="border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
               >
-                <GitHubIcon className="w-6 h-6 text-blue-700 group-hover:text-gray-800 transition-colors duration-300" />
+                <GitHubIcon className="w-4 h-4" />
+              </Link>
+              <Link
+                href="https://move-attestation-service.gitbook.io/move-attestation-service"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
+              >
+                <LinkIcon className="w-4 h-4" />
+              </Link>
+              <Link
+                href="https://www.x.com/moveas_xyz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
+              >
+                <X className="w-4 h-4" />
               </Link>
             </div>
           </nav>
