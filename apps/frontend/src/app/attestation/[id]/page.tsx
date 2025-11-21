@@ -1,4 +1,8 @@
 'use client'
+
+// Force dynamic rendering to avoid WASM loading issues during build
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react"; 
 import { SuiAttestation } from "@/components/attestations/sui-attestation";
 import { AptosAttestation } from "@/components/attestations/aptos-attestation";

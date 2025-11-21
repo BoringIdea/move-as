@@ -55,7 +55,22 @@ export const sui_attestations = pgTable('sui_attestations', {
   revokable: boolean('revokable').default(false),
   attestor: text('attestor').notNull(),
   recipient: text('recipient').notNull(),
-  data: text('data').notNull(),
+  
+  // Storage type: 0 = ON_CHAIN, 1 = OFF_CHAIN (default: Walrus)
+  storage_type: integer('storage_type').default(0),
+  
+  // Method 1: On-chain storage (backward compatible)
+  data: text('data'), // Can be null for OFF_CHAIN storage
+  
+  // Method 2: Off-chain storage (new, default: Walrus)
+  walrus_sui_object_id: text('walrus_sui_object_id'), // Sui object ID of Walrus blob
+  walrus_blob_id: text('walrus_blob_id'), // Walrus blob ID (base64url string)
+  data_hash: text('data_hash'), // Original data hash (for integrity verification)
+  encrypted: boolean('encrypted').default(false), // Whether data is encrypted
+  seal_nonce: text('seal_nonce'), // Seal encryption nonce (for encrypted OFF_CHAIN)
+  seal_policy_id: text('seal_policy_id'), // Seal access policy ID (for other patterns, optional)
+  
+  // Metadata (preserved)
   name: text('name'),
   description: text('description'),
   url: text('url'),

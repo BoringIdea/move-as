@@ -1,5 +1,11 @@
 export type SuiAddress = string;
 
+// Storage type enumeration
+export enum StorageType {
+  ON_CHAIN = 0,
+  OFF_CHAIN = 1,  // Off-chain storage, default to Walrus
+}
+
 export interface SuiAttestation {
   attestationAddr: SuiAddress;
   schemaAddr: SuiAddress;
@@ -10,7 +16,24 @@ export interface SuiAttestation {
   revokable: boolean;
   attestor: SuiAddress;
   recipient: SuiAddress;
-  data: Uint8Array;
+  
+  // Storage type (new)
+  storageType: StorageType;
+  
+  // Method 1: On-chain storage (backward compatible)
+  // Used when storageType === ON_CHAIN
+  data?: Uint8Array;  // On-chain stored data (optional, backward compatible)
+  
+  // Method 2: Off-chain storage (new, default: Walrus)
+  // Used when storageType === OFF_CHAIN
+  walrusSuiObjectId?: SuiAddress;  // Sui object ID of Walrus blob
+  walrusBlobId?: string;           // Walrus blob ID (base64url string)
+  dataHash?: Uint8Array;
+  encrypted?: boolean;
+  sealNonce?: Uint8Array;          // Seal encryption nonce (for encrypted OFF_CHAIN)
+  sealPolicyId?: SuiAddress;       // Optional policy ID for other patterns
+  
+  // Metadata (preserved)
   name: string;
   description: string;
   url: string;

@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid WASM loading issues during build
+export const dynamic = 'force-dynamic';
+
 import { useSchemaCount, useSchemaCreatorCount } from "@/api";
 import { getNetwork } from "@/utils/utils";
 import { Schemas } from "@/components/schemas/schemas";

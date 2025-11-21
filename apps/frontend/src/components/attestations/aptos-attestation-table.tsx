@@ -19,9 +19,9 @@ export function AptosAttestationTable({ attestations }: { attestations: any[] })
   const shortenAddress = (address?: string) => {
     if (!address) return '—';
     if (isMobile) {
-      return `${address.slice(0, 6)}...`;
+      return `${address.slice(0, 4)}...`;
     }
-    return `${address.slice(0, 10)}...${address.slice(-10)}`;
+    return `${address.slice(0, 6)}...${address.slice(-6)}`;
   };
 
   const renderSchemaName = (attestation: any) => (
@@ -46,7 +46,7 @@ export function AptosAttestationTable({ attestations }: { attestations: any[] })
         <Table>
           <TableHeader>
             <TableRow className="border-b border-black bg-white">
-              <TableHead className="w-[110px] px-6 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
+              <TableHead className="w-[90px] px-4 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
                 UID
               </TableHead>
               {!isMobile && (
@@ -54,10 +54,10 @@ export function AptosAttestationTable({ attestations }: { attestations: any[] })
                   Schema
                 </TableHead>
               )}
-              <TableHead className="px-6 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
+              <TableHead className="px-4 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
                 From
               </TableHead>
-              <TableHead className="px-6 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
+              <TableHead className="px-4 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
                 To
               </TableHead>
               {!isMobile && (
@@ -65,7 +65,7 @@ export function AptosAttestationTable({ attestations }: { attestations: any[] })
                   Type
                 </TableHead>
               )}
-              <TableHead className="px-6 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
+              <TableHead className="px-4 py-4 min-w-[120px] text-left text-xs font-black uppercase tracking-[0.3em] text-black">
                 Age
               </TableHead>
             </TableRow>
@@ -76,7 +76,7 @@ export function AptosAttestationTable({ attestations }: { attestations: any[] })
                 key={`${attestation.address}-${index}`}
                 className="border-b border-black hover:bg-[#D0E8FF]/30 transition-colors duration-150"
               >
-                <TableCell className="px-6 py-4">
+                <TableCell className="px-4 py-4">
                   <Link
                     href={`/attestation/${attestation.address}`}
                     className="font-bold text-black hover:text-[#2792FF] transition-colors duration-150"
@@ -89,7 +89,7 @@ export function AptosAttestationTable({ attestations }: { attestations: any[] })
                     {renderSchemaName(attestation)}
                   </TableCell>
                 )}
-                <TableCell className="px-6 py-4">
+                <TableCell className="px-4 py-4">
                   <Link
                     href={`/address/${attestation.attestor}`}
                     className="font-semibold text-black hover:text-[#2792FF] transition-colors duration-150"
@@ -97,7 +97,7 @@ export function AptosAttestationTable({ attestations }: { attestations: any[] })
                     {shortenAddress(attestation.attestor)}
                   </Link>
                 </TableCell>
-                <TableCell className="px-6 py-4">
+                <TableCell className="px-4 py-4">
                   <Link
                     href={`/address/${attestation.recipient}`}
                     className="font-semibold text-black hover:text-[#2792FF] transition-colors duration-150"
@@ -112,8 +112,8 @@ export function AptosAttestationTable({ attestations }: { attestations: any[] })
                     </span>
                   </TableCell>
                 )}
-                <TableCell className="px-6 py-4">
-                  <span className="font-mono text-xs font-bold text-black/70">
+                <TableCell className="px-4 py-4 min-w-[120px]">
+                  <span className="font-mono text-xs font-bold text-black/70 whitespace-nowrap">
                     {formatDistanceToNow(parseTimestamp(attestation.time), { addSuffix: true })}
                   </span>
                 </TableCell>

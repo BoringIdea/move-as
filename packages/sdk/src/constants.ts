@@ -1,3 +1,20 @@
+// Default Seal key server IDs for each network
+// These are Mysten Labs' default testnet key servers (Open mode, freely available)
+// For mainnet, users should use their own key servers or contact verified providers
+export const SEAL_KEY_SERVERS = {
+  testnet: [
+    '0x73d05d62c18d9374e3ea529e8e0ed6161da1a141a94d3f76ae3fe4e99356db75', // mysten-testnet-1
+    '0xf5d14a81a982144ae441cd7d64b09027f116a468bd36e7eca494f750591623c8', // mysten-testnet-2
+  ],
+  mainnet: [
+    // Mainnet key servers should be configured by users
+    // See: https://seal-docs.wal.app/Pricing/
+  ],
+  devnet: [
+    // Devnet key servers should be configured by users
+  ],
+};
+
 export const PACKAGES = {
   sui: {
     network: {
@@ -7,9 +24,9 @@ export const PACKAGES = {
         AttestationRegistryID: '',
       },
       testnet: {
-        PackageID: '0x9f7f58b39c470511b92c96748de38fa988415eee11537c42897812e34794894c',
-        SchemaRegistryID: '0x3a0810f1de7181921c5141aee6a1b277233b92daa09ce0dcd842c289994b9817',
-        AttestationRegistryID: '0x7f7f3303e84d8f3d7ba8b0b6d6a3863f5a3203b4f9e8daf0ddc2f9ede34df59f',
+        PackageID: '0x25e7e1b5ea4b6e83b531c9fdd6f153b3d6f01bc63dbb6c371fa783ad4feaff17',
+        SchemaRegistryID: '0x0310e993a6f0802257394b5a60732f23596a33d09ea8d288369549895fc2ebe2',
+        AttestationRegistryID: '0xf9d37981cf92c4fa71f40ff5139ff828dc989b096e123ff6f3f696679ebb812d',
       },
       devnet: {
         PackageID: '',

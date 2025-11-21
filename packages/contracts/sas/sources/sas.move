@@ -149,6 +149,61 @@ module sas::sas {
         attestation_address
     }
 
+    /// Attest with off-chain storage (default: Walrus)
+    public fun attest_off_chain(
+        schema_record: &mut Schema,
+        attestation_registry: &mut AttestationRegistry,
+        ref_attestation: address,
+        recipient: address,
+        expiration_time: u64,
+        walrus_sui_object_id: address,
+        walrus_blob_id: vector<u8>,
+        data_hash: vector<u8>,
+        encrypted: bool,
+        seal_nonce: Option<vector<u8>>,
+        seal_policy_id: Option<address>,
+        name: vector<u8>,
+        description: vector<u8>,
+        url: vector<u8>,
+        time: &Clock,
+        ctx: &mut TxContext
+    ): address {
+        assert!(!schema_record.has_resolver(), EHasResolver);
+        if (ref_attestation != @0x0) {
+            assert!(attestation_registry.is_exist(ref_attestation), ERefIdNotFound);
+        };
+        
+        let attestor = ctx.sender();
+
+        if (expiration_time != 0) {
+            assert!(time.timestamp_ms() < expiration_time, EExpired);
+        };
+
+        let attestation_address = attestation::create_attestation_off_chain(
+            object::id_address(schema_record),
+            ref_attestation,
+            clock::timestamp_ms(time),
+            expiration_time,
+            schema_record.revokable(),
+            attestor,
+            recipient,
+            walrus_sui_object_id,
+            walrus_blob_id,
+            data_hash,
+            encrypted,
+            seal_nonce,
+            seal_policy_id,
+            string::utf8(name),
+            string::utf8(description),
+            url::new_unsafe_from_bytes(url),
+            ATT_TYPE_ATTEST,
+            ctx
+        );
+
+        attestation_registry.registry(attestation_address, schema_record.addy());
+        attestation_address
+    }
+
     public fun attest_with_resolver(
         schema_record: &mut Schema,
         attestation_registry: &mut AttestationRegistry,

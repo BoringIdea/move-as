@@ -183,7 +183,7 @@ export function NewAptosAttestation({chain, schema }: { chain: Chain, schema: an
                   placeholder={`Enter ${field.name} (${field.type})`}
                   value={fieldValues[field.name] || ''}
                   onChange={(e) => handleInputChange(field.name, e.target.value)}
-                  className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+                  className="w-full h-12 px-3 border border-black text-sm font-semibold tracking-[0.1em] focus:outline-none"
                 />
               </div>
             ))}

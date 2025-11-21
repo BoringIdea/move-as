@@ -1,4 +1,8 @@
 'use client'
+
+// Force dynamic rendering to avoid WASM loading issues during build
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react"; 
 import SuiSchema from "@/components/schemas/sui-schema";
 import AptosSchema from "@/components/schemas/aptos-schema";
