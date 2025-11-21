@@ -140,7 +140,7 @@ INSERT INTO data_sources (
     'aptos',
     '0xdecibel_protocol_address',
     'Decibel',
-    'https://trading-api-http-dev-netna-us-central1-410192433417.us-central1.run.app/api/v1/user/transactions',
+    'https://api.netna.aptoslabs.com/decibel/api/v1/user/transactions',
     'api_key',
     '{
         "api_key": "${DECIBEL_API_KEY}",

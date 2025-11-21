@@ -15,6 +15,8 @@ import { LiveTradeFeed } from '@/components/analysis/live-trade-feed'
 
 type TabKey = 'analysis' | 'activity' | 'tasks'
 
+type SortKey = 'volume' | 'realized_pnl' | 'roi'
+
 type MetricCard = {
   label: string
   emoji: string
@@ -36,6 +38,7 @@ const metricsValue = (value?: number) => {
 
 export default function DecibelProtocolOptimizedPage() {
   const [activeTab, setActiveTab] = useState<TabKey>('analysis')
+  const [sortBy, setSortBy] = useState<SortKey>('volume')
 
   const { data: platformMetrics, loading: isMetricsLoading, error: metricsError } = usePlatformMetrics()
   const { data: markets } = useMarkets()
@@ -78,6 +81,33 @@ export default function DecibelProtocolOptimizedPage() {
   const totalVolumeComputed = useMemo(() => {
     return events.reduce((sum, event) => sum + (event.notionalUSD ?? 0), 0)
   }, [events])
+
+  // Sort leaderboard by selected criteria
+  const sortedLeaderboard = useMemo(() => {
+    if (!leaderboard || leaderboard.length === 0) return []
+    return [...leaderboard].sort((a, b) => {
+      let valueA: number
+      let valueB: number
+      
+      switch (sortBy) {
+        case 'realized_pnl':
+          valueA = typeof a.realized_pnl === 'number' ? a.realized_pnl : 0
+          valueB = typeof b.realized_pnl === 'number' ? b.realized_pnl : 0
+          break
+        case 'roi':
+          valueA = typeof a.roi === 'number' ? a.roi : 0
+          valueB = typeof b.roi === 'number' ? b.roi : 0
+          break
+        case 'volume':
+        default:
+          valueA = typeof a.volume === 'number' ? a.volume : 0
+          valueB = typeof b.volume === 'number' ? b.volume : 0
+          break
+      }
+      
+      return valueB - valueA // Descending order
+    })
+  }, [leaderboard, sortBy])
 
   const avgRoi = useMemo(() => {
     if (summary?.winRatePct !== undefined && events.length > 0) {
@@ -169,7 +199,9 @@ export default function DecibelProtocolOptimizedPage() {
                   <p className="text-xl font-black text-black">
                     {card.value !== undefined
                       ? typeof card.value === 'number'
-                        ? `$${formatNumber(card.value)}`
+                        ? card.label === 'Active Traders'
+                          ? formatNumber(card.value)
+                          : `$${formatNumber(card.value)}`
                         : card.value
                       : '—'}
                   </p>
@@ -263,16 +295,37 @@ export default function DecibelProtocolOptimizedPage() {
               <div className="border border-black px-4 py-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-black/60">Live Trade Feed</p>
-                  <span className="text-xs text-black/40">{trades?.length ? 'Recent' : 'No data'}</span>
+                  <span className="text-xs text-black/40">{trades?.length ? `${trades.length} trades` : 'No data'}</span>
                 </div>
-                {(trades || []).slice(0, 4).map((trade) => (
-                  <div key={`${trade.timestamp}-${trade.market}`} className="border border-black/30 rounded px-3 py-2 text-sm font-black uppercase tracking-[0.1em] flex items-center justify-between">
-                    <span className="text-black/80">{trade.action}</span>
-                    <span className="text-black/60">{trade.marketName}</span>
-                  </div>
-                ))}
-                {!trades?.length && (
-                  <p className="text-xs text-black/60">Pulling trades...</p>
+                {trades && trades.length > 0 ? (
+                  (trades || []).slice(0, 6).map((trade, index) => {
+                    const isLong = trade.action?.toLowerCase().includes('long') || trade.action?.toLowerCase() === 'buy';
+                    const timeAgo = trade.timestamp 
+                      ? `${Math.floor((Date.now() - trade.timestamp) / 60000)}m ago`
+                      : 'Just now';
+                    return (
+                      <div 
+                        key={`${trade.timestamp}-${trade.market}-${index}`} 
+                        className="border border-black/30 rounded-none px-3 py-2 text-xs font-black uppercase tracking-[0.1em] flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className={`${isLong ? 'text-green-600' : 'text-red-600'}`}>
+                            {isLong ? '▲' : '▼'}
+                          </span>
+                          <span className="text-black/80 truncate">{trade.marketName || trade.market}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-black/60">
+                          <span className="text-[0.65rem]">{trade.action || 'Trade'}</span>
+                          {trade.price > 0 && (
+                            <span className="text-[0.65rem]">@ ${trade.price.toFixed(2)}</span>
+                          )}
+                          <span className="text-[0.65rem]">{timeAgo}</span>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-xs text-black/60">Loading trades...</p>
                 )}
               </div>
             </div>
@@ -280,21 +333,54 @@ export default function DecibelProtocolOptimizedPage() {
             <section className="border border-black px-4 py-4 space-y-3">
               <header className="flex items-center justify-between">
                 <p className="text-xs font-black uppercase tracking-[0.3em] text-black/60">Top Traders</p>
-                <span className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-black/40">By Realized PnL</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[0.65rem] font-black uppercase tracking-[0.25em] text-black/40">Sort by:</span>
+                  <div className="flex gap-1">
+                    {(['volume', 'realized_pnl', 'roi'] as SortKey[]).map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => setSortBy(key)}
+                        className={`px-2 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] border border-black transition-colors ${
+                          sortBy === key
+                            ? 'bg-black text-white'
+                            : 'bg-white text-black hover:bg-black/5'
+                        }`}
+                      >
+                        {key === 'realized_pnl' ? 'PnL' : key === 'roi' ? 'ROI' : 'Volume'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </header>
               <div className="overflow-x-auto">
-                <table className="w-full text-xs uppercase tracking-[0.15em]">
-                  <thead>
-                    <tr className="border-b border-black text-[0.6rem] text-black/50">
-                      <th className="px-2 py-2 text-left">Rank</th>
-                      <th className="px-2 py-2 text-left">Trader</th>
-                      <th className="px-2 py-2 text-right">PnL</th>
-                      <th className="px-2 py-2 text-right">ROI</th>
-                      <th className="px-2 py-2 text-right">Volume</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(leaderboard || []).slice(0, 6).map((entry) => {
+                <div className="max-h-[450px] overflow-y-auto">
+                  <table className="w-full text-xs uppercase tracking-[0.15em]">
+                    <thead className="sticky top-0 bg-white z-10">
+                      <tr className="border-b border-black text-[0.6rem] text-black/50">
+                        <th className="px-2 py-2 text-left bg-white">Rank</th>
+                        <th className="px-2 py-2 text-left bg-white">Trader</th>
+                        <th 
+                          className={`px-2 py-2 text-right cursor-pointer hover:text-black/70 bg-white ${sortBy === 'realized_pnl' ? 'text-black font-black' : ''}`}
+                          onClick={() => setSortBy('realized_pnl')}
+                        >
+                          PnL {sortBy === 'realized_pnl' ? '▼' : ''}
+                        </th>
+                        <th 
+                          className={`px-2 py-2 text-right cursor-pointer hover:text-black/70 bg-white ${sortBy === 'roi' ? 'text-black font-black' : ''}`}
+                          onClick={() => setSortBy('roi')}
+                        >
+                          ROI {sortBy === 'roi' ? '▼' : ''}
+                        </th>
+                        <th 
+                          className={`px-2 py-2 text-right cursor-pointer hover:text-black/70 bg-white ${sortBy === 'volume' ? 'text-black font-black' : ''}`}
+                          onClick={() => setSortBy('volume')}
+                        >
+                          Volume {sortBy === 'volume' ? '▼' : ''}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedLeaderboard.map((entry, index) => {
                       const addr =
                         entry.account ??
                         'Unknown';
@@ -302,8 +388,8 @@ export default function DecibelProtocolOptimizedPage() {
                       const roi = typeof entry.roi === 'number' ? entry.roi : 0;
                       const vol = typeof entry.volume === 'number' ? entry.volume : 0;
                       return (
-                        <tr key={`${addr}-${entry.rank}`} className="border-b border-black/10 text-sm">
-                          <td className="px-2 py-2 font-black text-black/70">{entry.rank}</td>
+                        <tr key={`${addr}-${index}`} className="border-b border-black/10 text-sm">
+                          <td className="px-2 py-2 font-black text-black/70">{index + 1}</td>
                           <td className="px-2 py-2 font-black">
                             {addr && addr.length > 11 ? `${addr.slice(0, 8)}...${addr.slice(-4)}` : addr}
                           </td>
@@ -323,7 +409,7 @@ export default function DecibelProtocolOptimizedPage() {
                         </tr>
                       )
                     })}
-                    {!(leaderboard && leaderboard.length) && (
+                    {sortedLeaderboard.length === 0 && (
                       <tr>
                         <td colSpan={5} className="px-2 py-4 text-xs text-black/60 text-center">
                           Loading leaderboard...
@@ -332,6 +418,7 @@ export default function DecibelProtocolOptimizedPage() {
                     )}
                   </tbody>
                 </table>
+                </div>
               </div>
             </section>
           </section>
