@@ -24,7 +24,7 @@ interface UseDecibelOverviewReturn {
   error: string | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DECIBEL_API_URL || 'https://trading-api-http-dev-netna-us-central1-410192433417.us-central1.run.app';
+const API_BASE_URL = process.env.NEXT_PUBLIC_DECIBEL_API_URL || 'https://api.netna.aptoslabs.com/decibel';
 
 export function useDecibelOverview(): UseDecibelOverviewReturn {
   const [data, setData] = useState<DecibelOverview | null>(null);

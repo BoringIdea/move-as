@@ -155,7 +155,7 @@ INSERT INTO tasks (task_code, name, description, category, task_type, protocol_a
 -- Insert data source configurations
 INSERT INTO data_sources (source_name, source_type, chain, protocol_address, protocol_name, api_endpoint, api_auth_type, api_auth_config, data_mapping, update_frequency) VALUES
 ('aptos_transactions_db', 'database', 'aptos', NULL, NULL, NULL, NULL, NULL, '{"transaction_table": "user_transactions", "fields": {"tx_hash": "tx_hash", "user_address": "user_address", "protocol_address": "protocol_address", "protocol_name": "protocol_name", "amount": "amount", "timestamp": "timestamp", "operation_type": "operation_type"}}', 300),
-('decibel_api', 'api', 'aptos', '0xdecibel_protocol_address', 'Decibel', 'https://trading-api-http-dev-netna-us-central1-410192433417.us-central1.run.app/api/v1/user/transactions', 'api_key', '{"api_key": "${DECIBEL_API_KEY}", "header_name": "Authorization"}', '{"user_param": "user_address", "response_fields": {"tx_hash": "tx_hash", "amount": "amount", "timestamp": "timestamp", "operation_type": "operation_type", "protocol_name": "protocol_name"}}', 600);
+('decibel_api', 'api', 'aptos', '0xdecibel_protocol_address', 'Decibel', 'https://api.netna.aptoslabs.com/decibel/api/v1/user/transactions', 'api_key', '{"api_key": "${DECIBEL_API_KEY}", "header_name": "Authorization"}', '{"user_param": "user_address", "response_fields": {"tx_hash": "tx_hash", "amount": "amount", "timestamp": "timestamp", "operation_type": "operation_type", "protocol_name": "protocol_name"}}', 600);
 
 -- Insert scheduled task configurations
 INSERT INTO scheduled_tasks (task_name, task_type, cron_expression, is_active, config) VALUES
