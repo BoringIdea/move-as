@@ -244,11 +244,12 @@ export class SuiService implements OnModuleInit {
   }
 
   async getAttestations(offset: number, limit: number) {
-    return await db.query.sui_attestations.findMany({
-      offset,
-      limit,
-      orderBy: desc(sui_attestations.id),
-    });
+    return await db
+      .select()
+      .from(sui_attestations)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(sql`CAST(${sui_attestations.time} AS BIGINT) DESC`);
   }
 
   async getAttestationsWithSchemas(offset: number, limit: number) {
@@ -287,7 +288,7 @@ export class SuiService implements OnModuleInit {
       .leftJoin(sui_schemas, eq(sui_schemas.address, sui_attestations.schema))
       .limit(limit)
       .offset(offset)
-      .orderBy(desc(sui_attestations.id));
+      .orderBy(sql`CAST(${sui_attestations.time} AS BIGINT) DESC`);
   }
 
   async getAttestationsWithPagination(offset: number, limit: number) {
@@ -341,7 +342,7 @@ export class SuiService implements OnModuleInit {
       .limit(limit)
       .offset(offset)
       .where(eq(sui_schemas.address, schema))
-      .orderBy(desc(sui_attestations.id));
+      .orderBy(sql`CAST(${sui_attestations.time} AS BIGINT) DESC`);
   }
 
   async getAttestationsBySchemaWithPagination(schema: string, offset: number, limit: number) {
@@ -400,7 +401,7 @@ export class SuiService implements OnModuleInit {
           eq(sui_attestations.recipient, address),
         ),
       )
-      .orderBy(desc(sui_attestations.id));
+      .orderBy(sql`CAST(${sui_attestations.time} AS BIGINT) DESC`);
   }
 
   async getAttestationsByUserWithPagination(address: string, offset: number, limit: number) {

@@ -7,7 +7,7 @@ import Link from "next/link"
 import { ConnectButton } from '@mysten/dapp-kit';
 import { fetchAttestation } from "@/api/attestation"
 import { searchSchemas } from "@/api/schema"
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { debounce } from "lodash"
 import Image from 'next/image'
 import { ChainConfig, getChains, getNetwork } from "@/utils/utils"
@@ -26,34 +26,11 @@ export function Header() {
 
   const pathname = usePathname()
 
-  const [selectedChain, setSelectedChain] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const storedChain = localStorage.getItem('currentChain');
-      return storedChain
-        ? chains.find(n => n.chain === storedChain) || chains[0]
-        : chains[0];
-    }
-    return chains[0];
-  });
-  const initializedRef = useRef(false);
+  const selectedChain = chains.find((chain) => chain.chain === currentChain) || chains[0];
 
   const handleChainChange = useCallback((chain: ChainConfig) => {
     setCurrentChain(chain.chain as Chain);
-    setSelectedChain(chain);
-    localStorage.setItem('currentChain', chain.chain);
   }, [setCurrentChain]);
-
-  useEffect(() => {
-    if (!initializedRef.current) return;
-    const storedChain = localStorage.getItem('currentChain');
-    if (storedChain) {
-      const chain = chains.find(n => n.chain === storedChain);
-      if (chain) {
-        setCurrentChain(chain.chain as Chain);
-        setSelectedChain(chain);
-      }
-    }
-  }, [setCurrentChain, setSelectedChain]);
 
   const NavLink = ({
     href,
@@ -86,39 +63,43 @@ export function Header() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleSearch = useCallback(
-    debounce(async (term: string) => {
-      if (!term) {
-        setSearchResult(null)
+  const handleSearch = useMemo(
+    () =>
+      debounce(async (term: string) => {
+        if (!term) {
+          setSearchResult(null)
+          setError(null)
+          return
+        }
+        setIsLoading(true)
         setError(null)
-        return
-      }
-      setIsLoading(true)
-      setError(null)
-      try {
-        const attestationResponse = await fetchAttestation(term, currentChain, getNetwork() as any)
-        if (attestationResponse.success && attestationResponse.data) {
-          setSearchResult({ type: "attestation", uid: term })
-          return
+        try {
+          const attestationResponse = await fetchAttestation(term, currentChain, getNetwork() as any)
+          if (attestationResponse.success && attestationResponse.data) {
+            setSearchResult({ type: "attestation", uid: term })
+            return
+          }
+          const response = await searchSchemas(currentChain, getNetwork() as any, { searchInput: term })
+          const schemas = response.success ? response.data : []
+          if (schemas && schemas.length > 0) {
+            setSearchResult({ type: "schema", uid: term })
+            return
+          }
+          setError("No results found")
+        } catch (err) {
+          setError("Error occurred during search")
+        } finally {
+          setIsLoading(false)
         }
-        const response = await searchSchemas(currentChain, getNetwork() as any, { searchInput: term })
-        const schemas = response.success ? response.data : []
-        if (schemas && schemas.length > 0) {
-          setSearchResult({ type: "schema", uid: term })
-          return
-        }
-        setError("No results found")
-      } catch (err) {
-        setError("Error occurred during search")
-      } finally {
-        setIsLoading(false)
-      }
-    }, 300),
+      }, 300),
     [currentChain]
   )
 
   useEffect(() => {
     handleSearch(searchTerm)
+    return () => {
+      handleSearch.cancel()
+    }
   }, [searchTerm, handleSearch])
 
   const [isOpen, setIsOpen] = useState(false);
@@ -129,7 +110,7 @@ export function Header() {
 
   const chainSelector = (
     <Select.Root
-      value={selectedChain.chain}
+      value={currentChain}
       onValueChange={(value) => {
         const chain = chains.find(n => n.chain === value);
         if (chain) handleChainChange(chain);
@@ -218,7 +199,7 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] md:gap-4 ml-4 mr-2">
             <NavLink href="/attestations">Attestations</NavLink>
             <NavLink href="/schemas">Schemas</NavLink>
-            {selectedChain?.chain !== 'sui' && <NavLink href="/passport">Passport</NavLink>}
+            {currentChain !== 'sui' && <NavLink href="/passport">Passport</NavLink>}
           </nav>
         )}
       </div>
@@ -383,7 +364,7 @@ export function Header() {
           <nav className={`w-full mt-6 flex flex-col items-start gap-5 p-6 rounded-2xl bg-gradient-to-br from-blue-50/50 to-indigo-50/50 backdrop-blur-md border-2 border-blue-200/50 shadow-lg ${isMenuOpen ? 'block' : 'hidden'}`}>
             <NavLink href="/attestations">Attestations</NavLink>
             <NavLink href="/schemas">Schemas</NavLink>
-            {selectedChain?.chain !== 'sui' && <NavLink href="/passport">Passport</NavLink>}
+            {currentChain !== 'sui' && <NavLink href="/passport">Passport</NavLink>}
             <NavLink
               href="https://move-attestation-service.gitbook.io/move-attestation-service"
               target="_blank"
