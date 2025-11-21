@@ -78,7 +78,22 @@ CREATE TABLE IF NOT EXISTS sui_attestations (
     revokable BOOLEAN DEFAULT false,
     attestor TEXT NOT NULL,
     recipient TEXT NOT NULL,
-    data TEXT NOT NULL,
+    
+    -- Storage type: 0 = ON_CHAIN, 1 = OFF_CHAIN (default: Walrus)
+    storage_type INTEGER DEFAULT 0,
+    
+    -- Method 1: On-chain storage (backward compatible)
+    data TEXT, -- Can be NULL for OFF_CHAIN storage
+    
+    -- Method 2: Off-chain storage (new, default: Walrus)
+    walrus_sui_object_id TEXT, -- Sui object ID of Walrus blob (for OFF_CHAIN)
+    walrus_blob_id TEXT, -- Walrus blob ID (base64url string, for OFF_CHAIN)
+    data_hash TEXT, -- Original data hash (for integrity verification)
+    encrypted BOOLEAN DEFAULT false, -- Whether data is encrypted
+    seal_nonce TEXT, -- Seal encryption nonce (hex string, for encrypted OFF_CHAIN)
+    seal_policy_id TEXT, -- Seal access policy ID (for other patterns, optional)
+    
+    -- Metadata (preserved)
     name TEXT,
     description TEXT,
     url TEXT,
@@ -139,7 +154,7 @@ CREATE TABLE IF NOT EXISTS passport_scores (
 -- Indexes
 CREATE INDEX idx_passport_scores_user ON passport_scores(user_address, chain);
 CREATE INDEX idx_passport_scores_calculated ON passport_scores(calculated_at);
-CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_passport_scores_user_chain_unique 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_passport_scores_user_chain_unique 
 ON passport_scores (user_address, chain);
 
 -- Passport Score History Table

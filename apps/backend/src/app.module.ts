@@ -11,7 +11,7 @@ import { AchievementsModule } from './achievements/achievements.module';
 @Module({
   imports: [
     // MovementModule,
-    // SuiModule,
+    SuiModule,
     AptosModule,
     PassportModule,
     AchievementsModule,

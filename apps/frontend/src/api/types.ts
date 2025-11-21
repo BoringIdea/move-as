@@ -41,6 +41,13 @@ export interface Attestation {
   recipient: string;
   data: string;
   tx_hash: string;
+  storage_type?: number;         // 0 = ON_CHAIN, 1 = OFF_CHAIN
+  walrus_sui_object_id?: string; // Sui object ID of Walrus blob
+  walrus_blob_id?: string;       // Walrus blob ID (base64url string)
+  data_hash?: string;
+  encrypted?: boolean;
+  seal_nonce?: string;          // Seal encryption nonce (hex string)
+  seal_policy_id?: string;      // Seal policy ID (for other patterns, optional)
 }
 
 export interface AttestationWithSchema extends Attestation {

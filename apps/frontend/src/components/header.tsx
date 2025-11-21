@@ -23,6 +23,7 @@ const hoverStyles = "transition-colors duration-200 hover:text-[#2792FF]"
 
 export function Header() {
   const { currentChain, setCurrentChain } = useChain()
+
   const pathname = usePathname()
 
   const [selectedChain, setSelectedChain] = useState(() => {
@@ -217,7 +218,7 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] md:gap-4 ml-4 mr-2">
             <NavLink href="/attestations">Attestations</NavLink>
             <NavLink href="/schemas">Schemas</NavLink>
-            <NavLink href="/passport">Passport</NavLink>
+            {selectedChain?.chain !== 'sui' && <NavLink href="/passport">Passport</NavLink>}
           </nav>
         )}
       </div>
@@ -382,7 +383,7 @@ export function Header() {
           <nav className={`w-full mt-6 flex flex-col items-start gap-5 p-6 rounded-2xl bg-gradient-to-br from-blue-50/50 to-indigo-50/50 backdrop-blur-md border-2 border-blue-200/50 shadow-lg ${isMenuOpen ? 'block' : 'hidden'}`}>
             <NavLink href="/attestations">Attestations</NavLink>
             <NavLink href="/schemas">Schemas</NavLink>
-            <NavLink href="/passport">Passport</NavLink>
+            {selectedChain?.chain !== 'sui' && <NavLink href="/passport">Passport</NavLink>}
             <NavLink
               href="https://move-attestation-service.gitbook.io/move-attestation-service"
               target="_blank"

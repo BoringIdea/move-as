@@ -19,9 +19,9 @@ export function SuiAttestationTable({ attestations }: { attestations: any[] }) {
   const shortenAddress = (address?: string) => {
     if (!address) return '—';
     if (isMobile) {
-      return `${address.slice(0, 6)}...`;
+      return `${address.slice(0, 4)}...`;
     }
-    return `${address.slice(0, 10)}...${address.slice(-10)}`;
+    return `${address.slice(0, 6)}...${address.slice(-6)}`;
   };
 
   const renderSchemaName = (attestation: any) => (
@@ -46,7 +46,7 @@ export function SuiAttestationTable({ attestations }: { attestations: any[] }) {
         <Table>
           <TableHeader>
             <TableRow className="border-b border-black bg-white">
-              <TableHead className="w-[110px] px-6 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
+              <TableHead className="w-[90px] px-4 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
                 UID
               </TableHead>
               {!isMobile && (
@@ -54,10 +54,10 @@ export function SuiAttestationTable({ attestations }: { attestations: any[] }) {
                   Schema
                 </TableHead>
               )}
-              <TableHead className="px-6 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
+              <TableHead className="px-4 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
                 From
               </TableHead>
-              <TableHead className="px-6 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
+              <TableHead className="px-4 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
                 To
               </TableHead>
               {!isMobile && (
@@ -65,7 +65,7 @@ export function SuiAttestationTable({ attestations }: { attestations: any[] }) {
                   Type
                 </TableHead>
               )}
-              <TableHead className="px-6 py-4 text-left text-xs font-black uppercase tracking-[0.3em] text-black">
+              <TableHead className="px-4 py-4 min-w-[120px] text-left text-xs font-black uppercase tracking-[0.3em] text-black">
                 Age
               </TableHead>
             </TableRow>
@@ -76,7 +76,7 @@ export function SuiAttestationTable({ attestations }: { attestations: any[] }) {
                 key={`${attestation.address}-${index}`}
                 className="border-b border-black hover:bg-[#D0E8FF]/30 transition-colors duration-150"
               >
-                <TableCell className="px-6 py-4">
+                <TableCell className="px-4 py-4">
                   <Link
                     href={`/attestation/${attestation.address}`}
                     className="font-bold text-black hover:text-[#2792FF] transition-colors duration-150"
@@ -89,7 +89,7 @@ export function SuiAttestationTable({ attestations }: { attestations: any[] }) {
                     {renderSchemaName(attestation)}
                   </TableCell>
                 )}
-                <TableCell className="px-6 py-4">
+                <TableCell className="px-4 py-4">
                   <Link
                     href={`/address/${attestation.attestor}`}
                     className="font-semibold text-black hover:text-[#2792FF] transition-colors duration-150"
@@ -97,7 +97,7 @@ export function SuiAttestationTable({ attestations }: { attestations: any[] }) {
                     {shortenAddress(attestation.attestor)}
                   </Link>
                 </TableCell>
-                <TableCell className="px-6 py-4">
+                <TableCell className="px-4 py-4">
                   <Link
                     href={`/address/${attestation.recipient}`}
                     className="font-semibold text-black hover:text-[#2792FF] transition-colors duration-150"
@@ -107,13 +107,35 @@ export function SuiAttestationTable({ attestations }: { attestations: any[] }) {
                 </TableCell>
                 {!isMobile && (
                   <TableCell className="px-6 py-4">
-                    <span className="rounded-none border border-black bg-white px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
-                      {attestation.tx_hash ? 'OnChain' : 'OffChain'}
-                    </span>
+                    {(() => {
+                      const storageType = attestation.storage_type ?? 0; // Default to ON_CHAIN for backward compatibility
+                      const isEncrypted = attestation.encrypted === true;
+                      
+                      if (storageType === 0) {
+                        return (
+                          <span className="inline-block whitespace-nowrap rounded-none border border-black bg-white px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+                            ON CHAIN
+                          </span>
+                        );
+                      } else {
+                        return (
+                          <div className="flex gap-2 items-center flex-wrap">
+                            <span className="inline-block whitespace-nowrap rounded-none border border-black bg-[#D0E8FF] px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#2792FF]">
+                              OFF CHAIN
+                            </span>
+                            {isEncrypted && (
+                              <span className="inline-block whitespace-nowrap rounded-none border border-black bg-[#FFE7C8] px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#FF6B00]">
+                                ENCRYPTED
+                              </span>
+                            )}
+                          </div>
+                        );
+                      }
+                    })()}
                   </TableCell>
                 )}
-                <TableCell className="px-6 py-4">
-                  <span className="font-mono text-xs font-bold text-black/70">
+                <TableCell className="px-4 py-4 min-w-[120px]">
+                  <span className="font-mono text-xs font-bold text-black/70 whitespace-nowrap">
                     {formatDistanceToNow(parseTimestamp(attestation.time), { addSuffix: true })}
                   </span>
                 </TableCell>

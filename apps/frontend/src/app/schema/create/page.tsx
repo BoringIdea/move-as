@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid WASM loading issues during build
+export const dynamic = 'force-dynamic';
+
 import { CreateSuiSchema } from "@/components/schemas/create-sui-schema";
 import { CreateAptosSchema } from "@/components/schemas/create-aptos-schema";
 import { useChain, Chain } from "@/components/providers/chain-provider";

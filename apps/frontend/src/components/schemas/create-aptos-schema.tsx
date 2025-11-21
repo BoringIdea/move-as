@@ -155,13 +155,13 @@ export function CreateAptosSchema({chain}: {chain: Chain}) {
                       placeholder="Enter field name"
                       value={field.name}
                       onChange={(e) => handleFieldChange(index, 'name', e.target.value)}
-                      className="w-full h-11 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+                      className="w-full h-11 px-3 border border-black text-sm font-semibold tracking-[0.1em] focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1">
                     <Label className="text-[0.65rem] font-black uppercase tracking-[0.3em] text-black/60">Field Type</Label>
                     <Select value={field.type} onValueChange={(value) => handleFieldChange(index, 'type', value)}>
-                      <SelectTrigger className="border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none">
+                      <SelectTrigger className="border border-black text-sm font-semibold tracking-[0.1em] focus:outline-none">
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -207,7 +207,7 @@ export function CreateAptosSchema({chain}: {chain: Chain}) {
                 placeholder="Set the name of the schema"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+                className="w-full h-12 px-3 border border-black text-sm font-semibold tracking-[0.1em] focus:outline-none"
               />
             </div>
             <div className="space-y-1">
@@ -217,7 +217,7 @@ export function CreateAptosSchema({chain}: {chain: Chain}) {
                 placeholder="Set the URL of the schema"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="w-full h-12 px-3 border border-black text-sm font-semibold uppercase tracking-[0.1em] focus:outline-none"
+                className="w-full h-12 px-3 border border-black text-sm font-semibold tracking-[0.1em] focus:outline-none"
               />
             </div>
           </div>

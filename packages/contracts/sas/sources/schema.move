@@ -155,7 +155,7 @@ module sas::schema {
     public fun config<Rule: drop, Config: store>(
         self: &Schema
     ): &Config {
-        self.resolver.borrow().config.borrow(type_name::get<Rule>())
+        self.resolver.borrow().config.borrow(type_name::with_defining_ids<Rule>())
     }
 
     public fun has_resolver(self: &Schema): bool {
@@ -367,7 +367,7 @@ module sas::schema {
         name: String,
         _: Rule
     ) {
-        resolver_builder.rules.get_mut(&name).insert(type_name::get<Rule>());
+        resolver_builder.rules.get_mut(&name).insert(type_name::with_defining_ids<Rule>());
     }
 
     public fun add_rule_config<Rule: drop, Config: store>(
@@ -375,7 +375,7 @@ module sas::schema {
         _: Rule,
         config: Config
     ) {
-        resolver_builder.config.add(type_name::get<Rule>(), config);
+        resolver_builder.config.add(type_name::with_defining_ids<Rule>(), config);
     }
 
     public fun add_resolver_address(
@@ -395,13 +395,13 @@ module sas::schema {
     public fun config_mut<Rule: drop, Config: store>(
         self: &mut Schema
     ): &mut Config {
-        self.resolver.borrow_mut().config.borrow_mut(type_name::get<Rule>())
+        self.resolver.borrow_mut().config.borrow_mut(type_name::with_defining_ids<Rule>())
     }
 
     public fun approve<Rule: drop>(
         request: &mut Request,
         _: Rule
     ) {
-        request.approvals.insert(type_name::get<Rule>());
+        request.approvals.insert(type_name::with_defining_ids<Rule>());
     }
 }
