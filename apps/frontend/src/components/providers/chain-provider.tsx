@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef, Suspense } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export type Chain = 'sui' | 'movement' | 'aptos';
@@ -33,7 +33,8 @@ const getInitialChain = (): Chain => {
 
 const ChainContext = createContext<ChainContextType | undefined>(undefined);
 
-export const ChainProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// Internal component that uses useSearchParams
+const ChainProviderInner: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentChain, setCurrentChainState] = useState<Chain>(getInitialChain);
   const router = useRouter();
   const pathname = usePathname();
@@ -84,6 +85,19 @@ export const ChainProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <ChainContext.Provider value={{ currentChain, setCurrentChain }}>
       {children}
     </ChainContext.Provider>
+  );
+};
+
+// Public provider that wraps with Suspense
+export const ChainProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <Suspense fallback={
+      <ChainContext.Provider value={{ currentChain: 'aptos', setCurrentChain: () => {} }}>
+        {children}
+      </ChainContext.Provider>
+    }>
+      <ChainProviderInner>{children}</ChainProviderInner>
+    </Suspense>
   );
 };
 
