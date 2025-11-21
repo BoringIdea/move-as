@@ -13,11 +13,11 @@ export type ChainConfig = {
 }
 
 const chains: ChainConfig[] = [
-  // { 
-  //   name: "Sui Testnet", 
-  //   chain: "sui",
-  //   icon: "/sui-logo.svg", 
-  // },
+  { 
+    name: "Sui Testnet", 
+    chain: "sui",
+    icon: "/sui-logo.svg", 
+  },
   {
     name: "Aptos Testnet",
     chain: "aptos",

@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid WASM loading issues during build
+export const dynamic = 'force-dynamic';
+
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { NewSuiAttestation } from "@/components/attestations/new-sui-attestation";

@@ -1,10 +1,21 @@
 import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { fromHEX, toHEX, bcs } from '@mysten/bcs';
+import { blake2b } from '@noble/hashes/blake2b';
 import { PACKAGES } from "../constants";
 
 import dotenv from 'dotenv';
 dotenv.config();
+
+/**
+ * Calculate Blake2b-256 hash of data (matches Sui's hash::blake2b256)
+ * This is a pure function that directly hashes data using blake2b256 algorithm
+ * @param data Data to hash as Uint8Array
+ * @returns Hash as Uint8Array (32 bytes)
+ */
+export function blake2b256(data: Uint8Array): Uint8Array {
+  return blake2b(data, { dkLen: 32 });
+}
 
 export const Address = bcs.bytes(32).transform({
 	// To change the input type, you need to provide a type definition for the input
