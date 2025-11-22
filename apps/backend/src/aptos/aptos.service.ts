@@ -9,7 +9,7 @@ import { PaginatedData } from '../common';
 type NewAptosSchema = typeof aptos_schemas.$inferInsert;
 type NewAptosAttestation = typeof aptos_attestations.$inferInsert;
 
-const APTOS_ADDRESS = process.env.ATPOS_ADDRESS;
+const APTOS_ADDRESS = process.env.APTOS_PACKAGE_ADDRESS;
 
 @Injectable()
 export class AptosService implements OnModuleInit {

@@ -74,7 +74,7 @@ export class PassportPollingService {
     );
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_12_HOURS)
   async handlePassportScoreUpdate() {
     if (!this.config.enabled) {
       this.logger.log('Passport polling is disabled');
