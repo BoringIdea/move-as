@@ -273,7 +273,7 @@ export function Header() {
                 <GitHubIcon className="w-4 h-4" />
               </Link>
               <Link
-                href="https://move-attestation-service.gitbook.io/move-attestation-service"
+                href="https://www.docs.moveas.xyz/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
@@ -283,7 +283,7 @@ export function Header() {
                 <span className="sr-only">Docs</span>
               </Link>
               <Link
-                href="https://twitter.com/moveas_xyz"
+                href="https://www.x.com/moveas_xyz"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
@@ -365,13 +365,6 @@ export function Header() {
             <NavLink href="/attestations">Attestations</NavLink>
             <NavLink href="/schemas">Schemas</NavLink>
             {currentChain !== 'sui' && <NavLink href="/passport">Passport</NavLink>}
-            <NavLink
-              href="https://move-attestation-service.gitbook.io/move-attestation-service"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Docs
-            </NavLink>
             <div className="flex items-center gap-4 mt-6 pt-6 border-t-2 border-blue-200/50">
               <Link
                 href="https://github.com/BoringIdea/move-as"
@@ -382,7 +375,7 @@ export function Header() {
                 <GitHubIcon className="w-4 h-4" />
               </Link>
               <Link
-                href="https://move-attestation-service.gitbook.io/move-attestation-service"
+                href="https://www.docs.moveas.xyz/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
