@@ -18,11 +18,11 @@ const chains: ChainConfig[] = [
     chain: "sui",
     icon: "/sui-logo.svg", 
   },
-  {
-    name: "Aptos Testnet",
-    chain: "aptos",
-    icon: "/aptos-logo.svg",
-  },
+  // {
+  //   name: "Aptos Testnet",
+  //   chain: "aptos",
+  //   icon: "/aptos-logo.svg",
+  // },
   // { 
   //   name: "Movement Testnet", 
   //   chain: "movement",
