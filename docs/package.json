@@ -1,0 +1,16 @@
+{
+  "name": "moveas-docs",
+  "version": "1.0.0",
+  "description": "MoveAS Documentation",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/copy-readme.js",
+    "dev": "vitepress dev",
+    "prebuild": "node scripts/copy-readme.js",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}

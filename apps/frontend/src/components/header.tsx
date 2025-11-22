@@ -374,7 +374,7 @@ export function Header() {
             </NavLink>
             <div className="flex items-center gap-4 mt-6 pt-6 border-t-2 border-blue-200/50">
               <Link
-                href="https://github.com/HashIdea/moveas-core"
+                href="https://github.com/BoringIdea/move-as"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="border border-black px-3 py-2 rounded-none hover:bg-black/5 transition-colors duration-200"
