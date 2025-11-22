@@ -87,6 +87,9 @@ export default defineConfig({
     config: (md) => {
       // Add plugins if needed
     }
-  }
+  },
+  
+  // Ignore dead links during build (for external links and files outside docs directory)
+  ignoreDeadLinks: true  // Ignore all dead links (includes external links and files outside docs directory)
 })
 

@@ -72,23 +72,22 @@ Ready to start using MoveAS? Check out the following resources:
 1. **[Quickstart Guide](./Getting-Started/Quickstart.md)**: Get up and running in minutes
 2. **[Core Concepts](./Basics/Core-Concepts.md)**: Understand the fundamental concepts
 3. **[Architecture](./Basics/Architecture.md)**: Learn about the system design
-4. **[SDK Documentation](../packages/sdk/README.md)**: Integrate MoveAS into your application
-5. **[Contracts Documentation](../packages/contracts/README.md)**: Deep dive into smart contracts
+4. **[SDK Documentation](./SDK)**: Integrate MoveAS into your application
+5. **[Contracts Documentation](./Contracts)**: Deep dive into smart contracts
 
 ## Resources
 
-- **GitHub**: [MoveAS Repository](https://github.com/your-org/moveas)
-- **Documentation**: This GitBook
+- **GitHub**: [MoveAS Repository](https://github.com/BoringIdea/move-as)
 - **SDK**: [@moveas/sdk](https://www.npmjs.com/package/@moveas/sdk) on npm
 - **Explorer**: [MoveAS Explorer](https://explorer.moveas.io) (coming soon)
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see the [CONTRIBUTING.md](https://github.com/BoringIdea/move-as/blob/main/CONTRIBUTING.md) file in the repository for guidelines.
 
 ## License
 
-This project is licensed under the Business Source License 1.1. See [LICENSE](../LICENSE) for details.
+This project is licensed under the Business Source License 1.1. See the [LICENSE](https://github.com/BoringIdea/move-as/blob/main/LICENSE) file for details.
 
 ---
 

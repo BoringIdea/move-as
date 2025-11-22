@@ -25,7 +25,7 @@ This document outlines the development roadmap for MoveAS.
 
 ## Contributing
 
-We welcome community contributions! If you have feature requests or would like to contribute, please see [CONTRIBUTING.md](../CONTRIBUTING.md).
+We welcome community contributions! If you have feature requests or would like to contribute, please see the [CONTRIBUTING.md](https://github.com/BoringIdea/move-as/blob/main/CONTRIBUTING.md) file in the repository.
 
 ## Feedback
 
