@@ -16,8 +16,21 @@ const formatValue = (value: any): string => {
   if (typeof value === 'bigint') {
     return value.toString();
   }
+  // Only convert string to BigInt if it's a valid number string ending with 'n'
+  // This handles cases where BigInt values are serialized as strings like "123n"
   if (typeof value === 'string' && value.endsWith('n')) {
-    return BigInt(value.slice(0, -1)).toString();
+    const numberPart = value.slice(0, -1);
+    // Check if it's a valid integer string (allow negative sign)
+    if (/^-?\d+$/.test(numberPart)) {
+      try {
+        return BigInt(numberPart).toString();
+      } catch (error) {
+        // If conversion fails, return original string
+        return value;
+      }
+    }
+    // Not a valid number string, return as-is (e.g., "Alice Chen" wouldn't match)
+    return value;
   }
   if (typeof value === 'object' && value !== null) {
     return JSON.stringify(value, (_, v) =>
