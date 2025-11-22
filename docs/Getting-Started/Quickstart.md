@@ -318,8 +318,8 @@ console.log('Attestation created:', res2);
 
 - Learn about [Core Concepts](../Basics/Core-Concepts.md)
 - Explore the [Architecture](../Basics/Architecture.md)
-- Check out the [SDK Documentation](../../packages/sdk/README.md)
-- Read [Tutorials](../Tutorials/) for advanced use cases
+- Check out the [SDK Documentation](../SDK)
+- Explore the [Contracts Documentation](../Contracts) for smart contract details
 
 ---
 
